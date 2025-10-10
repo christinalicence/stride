@@ -13,9 +13,9 @@ class UserProfile(models.Model):
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    display_name = models.CharField(max_length=100 blank=True)
+    display_name = models.CharField(max_length=100, blank=True)
     profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
-    bio = models.TextField(blank=True null=True)
+    bio = models.TextField(blank=True, null=True)
 
     # Equipment info text
     equipment_text = models.TextField(
@@ -25,7 +25,7 @@ class UserProfile(models.Model):
     )
 
     # private physical info
-    weight_kg = models.FloatField(blank=True, null=True, help_text="kg(privates)")
+    weight_kg = models.FloatField(blank=True, null=True, help_text="kg(private)")
     height_cm = models.FloatField(blank=True, null=True, help_text="cm(private)")
     age = models.PositiveIntegerField(blank=True, null=True, help_text="years(private)")
     fitness_level = models.CharField(
@@ -35,9 +35,9 @@ class UserProfile(models.Model):
         help_text="(private)")
     
     # injuries & accessibility 
-    long_term_injuries = models.TextField(blank=True, null=True help_text="Please describe any long-term limitations (describe functional limitations).")
-    injury_limitations = models.TextField(blank=True, null=True help_text="Describe specific movement limitations / accessibility needs.")
-    minor_injuries = models.TextField(blank=True, null=True help_text="Minor injuries in last 2 weeks (e.g., 'tight hamstring').")
+    long_term_injuries = models.TextField(blank=True, null=True, help_text="Please describe any long-term limitations (describe functional limitations).")
+    injury_limitations = models.TextField(blank=True, null=True, help_text="Describe specific movement limitations / accessibility needs.")
+    minor_injuries = models.TextField(blank=True, null=True, help_text="Minor injuries in last 2 weeks (e.g., 'tight hamstring').")
 
     # exercise habits
     exercise_days_per_week = models.PositiveIntegerField(default=3, validators=[MinValueValidator(1), MaxValueValidator(7)])
@@ -87,10 +87,33 @@ class TrainingPlan(models.Model):
     
 
 class Comment(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    plan = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='comments')
+    """Comments made by users on profiles or plans."""
+    author = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='comments_made', null=True, blank=True)
+    
+    """For profile comments, 'profile' is set."""
+    profile = models.ForeignKey(
+        UserProfile,
+        on_delete=models.CASCADE,
+        related_name='comments_received',
+        null=True,
+        blank=True
+    )
+
+    """For plan comments, 'plan' is set."""
+    plan = models.ForeignKey(
+        'TrainingPlan',
+        on_delete=models.CASCADE,
+        related_name='comments',
+        null=True,
+        blank=True
+    )
+
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Comment by {self.user} on {self.profile}"
+        target = self.profile or self.plan
+        return f"Comment by {self.author} on {target}"
+
+    class Meta:
+        ordering = ['-created_at']
