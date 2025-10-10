@@ -50,4 +50,47 @@ class UserProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def public_profile(self):
+        """Data for public profile view.(some fields are private)"""
+        return {
+            "display_name": self.display_name,
+            "profile_picture": self.profile_picture.url if self.profile_picture else None,
+            "bio": self.bio,
+            "equipment_text": self.equipment_text,
+            "fitness_level": self.fitness_level,
+            "exercise_days_per_week": self.exercise_days_per_week,
+            "exercise_duration": self.exercise_duration,
+            "followers_count": self.followers.count(),
+            "following_count": self.following.count(),
+        }
+
+    def __str__(self):
+        return self.display_name or self.user.username
     
+
+class TrainingPlan(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='plans')
+    # The JSON from Claude is stored here
+    plan_json = models.JSONField()
+    plan_summary = models.CharField(max_length=400, blank=True)
+    goal_type = models.CharField(max_length=20, choices=[('strength','Strength'),('cardio','Cardio'),('combined','Combined')], default='combined')
+    target_event = models.CharField(max_length=100, blank=True, help_text="E.g., '5K run', '10K cycle', 'Half marathon', 'Marathon', 'General fitness'")
+    target_date = models.DateField(blank=True, null=True)
+    start_date = models.DateField(auto_now_add=True)
+    end_date = models.DateField(blank=True, null=True)
+    previous_plan = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+    progress_comment = models.TextField(blank=True, null=True)   # user feedback after plan
+    minor_injuries = models.TextField(blank=True, null=True)     # injuries during plan
+
+    def __str__(self):
+        return f"Plan for {self.id} for {self.user}"
+    
+
+class Comment(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    plan = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='comments')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comment by {self.user} on {self.profile}"
