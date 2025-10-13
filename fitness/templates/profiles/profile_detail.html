@@ -43,8 +43,8 @@
                 {% for comment in comments %}
                     <li class="list-group-item">
                         <div>
-                        {{ comment.author.display_name }}: {{ comment.text }}
-                        <p> {{ comment.created_at|date:"M d, Y H:i" }}<p>
+                        {{ comment.author.display_name }}: {{ comment.content }}
+                        <p> {{ comment.created_at|date:"M d, Y H:i" }}</p>
                         </div>
                         {% if comment.author.user == user %}
                         <div>
@@ -62,7 +62,7 @@
 
     <div class="card shadow-sm p-4 mb-4">
         <h3>Add a Comment</h3>
-        <form method="post">
+        <form method="post" action="{% url 'add_comment' profile.pk %}">
             {% csrf_token %}
             {{ comment_form|crispy }}
             <button type="submit" class="btn btn-primary mt-2">Submit</button>
