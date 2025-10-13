@@ -1,1 +1,66 @@
-.env
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ---- Virtual Environments ----
+.venv/
+venv/
+env/
+ENV/
+*.env
+.env.*
+
+# ---- Django ----
+*.log
+db.sqlite3
+media/
+staticfiles/
+
+# ---- IDEs & Editors ----
+.vscode/
+.idea/
+*.swp
+*~
+*.sublime-project
+*.sublime-workspace
+
+# ---- macOS ----
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ---- Heroku / Build Artifacts ----
+*.bak
+*.tmp
+*.coverage
+*.egg-info/
+build/
+dist/
+
+# ---- Pip / Python Packaging ----
+pip-wheel-metadata/
+*.egg
+.eggs/
+wheels/
+
+# ---- Coverage / Testing ----
+.coverage
+htmlcov/
+.tox/
+.nox/
+.pytest_cache/
+.coverage.*
+
+# ---- Migrations Cache ----
+*/migrations/__pycache__/
+
+# ---- Compiled Bytecode ----
+*.pyc
+*.pyo
+
+# ---- Local Config Files ----
+local_settings.py
+.env.local
+.env.dev
+.env.test

@@ -1,1 +1,1 @@
-web: gunicorn strideai.wsgi --log-file -
+web: gunicorn strideai.wsgi
