@@ -18,4 +18,4 @@ class TrainingPlanAdmin(SummernoteModelAdmin):
 @admin.register(Comment)
 class CommentAdmin(SummernoteModelAdmin):
     # Enable Summernote for comment content
-    summernote_fields = ('content',)
+    summernote_fields = ('text',)
