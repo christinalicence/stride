@@ -75,8 +75,40 @@ def add_comment(request, profile_pk):
             comment.profile = target_profile
             comment.save()
             messages.success(request, "Comment added!")
-            return redirect('profile_detail', pk=target_profile.pk)
+        else:
+            messages.error(request, "Error adding comment. Please try again.")
+    return redirect('profile_detail', username=username)
 
-    # If not a POST request (or if POST fails), redirect back to the profile detail page
-    messages.error(request, "Could not submit comment.")
-    return redirect("profile_detail", pk=profile_pk)
+@login_required
+def edit_comment(request, comment_pk):
+    """Allows a user to edit their own comment."""
+    comment = get_object_or_404(Comment, id=comment_id)
+    # only the author can edit
+    if comment.author.user != request.user:
+        messages.error(request, "You do not have permission to edit this comment.")
+        return redirect('profile_detail', username=comment.profile.user.username)
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Comment updated!")
+            return redirect('profile_detail', username=comment.profile.user.username)
+    else:
+        form = CommentForm(instance=comment)
+
+    return render(request, 'profiles/edit_comment.html', {'form': form, 'comment': comment})
+
+
+@login_required
+def delete_comment(request, comment_id):
+    """Allows a user to delete their own comment."""
+    comment = get_object_or_404(Comment, id=comment_id)
+    # only the author can delete
+    if comment.author.user != request.user:
+        messages.error(request, "You do not have permission to delete this comment.")
+        return redirect('profile_detail', username=comment.profile.user.username)
+    
+    profile_username = comment.profile.user.username
+    comment.delete()
+    messages.success(request, "Comment deleted.")
+    return redirect('profile_detail', username=profile_username)

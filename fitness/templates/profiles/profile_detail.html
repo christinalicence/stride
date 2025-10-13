@@ -42,8 +42,16 @@
             <ul class="list-group">
                 {% for comment in comments %}
                     <li class="list-group-item">
+                        <div>
                         {{ comment.author.display_name }}: {{ comment.text }}
                         <p> {{ comment.created_at|date:"M d, Y H:i" }}<p>
+                        </div>
+                        {% if comment.author.user == user %}
+                        <div>
+                            <a href="{% url 'edit_comment' comment.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <a href="{% url 'delete_comment' comment.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
+                        {% endif %}
                     </li>
                 {% endfor %}
             </ul>
