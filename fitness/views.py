@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import UserProfile, TrainingPlan, Comment
+from .forms import UserProfileForm, CommentForm, TrainingPlanForm
 
 # Create your views here.
 
@@ -15,9 +16,9 @@ def profile_list(request):
 
 # Detailed orofile view after logon
 @login_required
-def profile_detail(request, pk):
+def profile_detail(request, username):
     """Displays detailed profile information."""
-    profile = get_object_or_404(UserProfile, pk=pk)
+    profile = get_object_or_404(UserProfile, user__username=username) # fetch by username
     plans = profile.plans.all().order_by('-start_date')
     comments = profile.comments_received.all().order_by('-created_at')
     comment_form = CommentForm()
@@ -29,7 +30,6 @@ def profile_detail(request, pk):
         'comment_form': comment_form,
     }
     return render(request, 'profiles/profile_detail.html', context)
-
 @login_required
 def edit_profile(request):
     """Allows the logged-in user to edit their profile."""
@@ -39,7 +39,7 @@ def edit_profile(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Profile updated successfully.')
-            return redirect('profile_detail', pk=profile.pk)
+            return redirect('profile_detail', username=profile.user.username) 
     else:
         form = UserProfileForm(instance=profile)
 
@@ -65,8 +65,8 @@ def create_training_plan(request):
 @login_required
 def add_comment(request, profile_pk):
     """Allows a user to add a comment to another user's profile."""
-    target_profile = get_object_or_404(UserProfile, pk=profile_pk) # the profile being commented on
-    author_profile = get_object_or_404(UserProfile, user=request.user) # the profile of the commenter
+    target_profile = get_object_or_404(UserProfile, pk=profile_pk) 
+    author_profile = get_object_or_404(UserProfile, user=request.user)  # the profile of the commenter
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
