@@ -149,5 +149,5 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Redirects after login/logout
-LOGIN_REDIRECT_URL = 'profile_list'
-LOGOUT_REDIRECT_URL = 'login'
+LOGIN_REDIRECT_URL = '/profiles/{username}/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'

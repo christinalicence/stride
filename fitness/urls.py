@@ -1,4 +1,5 @@
 from django.urls import path
+from django.shortcuts import redirect
 from . import views
 
 urlpatterns = [
@@ -9,4 +10,7 @@ urlpatterns = [
     path('comments/<int:comment_id>/edit/', views.edit_comment, name='edit_comment'),
     path('comments/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
     path('comments/<int:comment_id>/approve/', views.approve_comment, name='approve_comment'),
+    path('signup/', views.signup, name='signup'),
+    path('accounts/profile/', lambda request: redirect('profile_detail', username=request.user.username)
+    ),
 ]

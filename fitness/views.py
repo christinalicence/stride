@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import UserProfile, TrainingPlan, Comment
 from .forms import UserProfileForm, CommentForm, TrainingPlanForm
+from django.shortcuts import render, redirect
 
 # Create your views here.
 
@@ -131,3 +132,20 @@ def approve_comment(request, comment_id):
     comment.save()
     messages.success(request, "Comment approved.")
     return redirect('profile_detail', username=comment.profile.user.username)
+
+
+def signup(request):
+    """Handles user signup."""
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save() #Save user
+            UserProfile.objects.create( # Create associated profile, add some holding text
+                user=user,
+                display_name=user.username,
+                bio="This user hasn't added a bio yet."
+            )
+            return redirect('login')  # Redirect to login page after signup
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/signup.html', {'form': form})
