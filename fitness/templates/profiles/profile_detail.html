@@ -38,14 +38,19 @@
 
     <div class="card shadow-sm p-4 mb-4">
         <h3>Comments</h3>
-        {% if comments %}
+        {% if profile.comments_received.all %}
             <ul class="list-group">
-                {% for comment in comments %}
+                {% for comment in profile.comments_received.all %}
+                    {% if comment.approved or profile.user == user %}
                     <li class="list-group-item">
                         <div>
                         {{ comment.author.display_name }}: {{ comment.content }}
                         <p> {{ comment.created_at|date:"M d, Y H:i" }}</p>
                         </div>
+                        {% if profile.user == user and not comment.approved %}
+                        <!--Show button only to profile owner-->
+                        <a href="{% url 'approve_comment' comment.id %}" class="btn btn-sm btn-outline-success">Approve</a>
+                        {% endif %}
                         {% if comment.author.user == user %}
                         <div>
                             <a href="{% url 'edit_comment' comment.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
@@ -53,6 +58,7 @@
                         </div>
                         {% endif %}
                     </li>
+                    {% endif %}
                 {% endfor %}
             </ul>
         {% else %}

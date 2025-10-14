@@ -20,7 +20,7 @@ def profile_detail(request, username):
     """Displays detailed profile information."""
     profile = get_object_or_404(UserProfile, user__username=username) # fetch by username
     plans = profile.plans.all().order_by('-start_date')
-    comments = profile.comments_received.all().order_by('-created_at')
+    comments = profile.comments_received.filter(approved=True).order_by('-created_at')
     comment_form = CommentForm()
 
     context = {
@@ -30,6 +30,8 @@ def profile_detail(request, username):
         'comment_form': comment_form,
     }
     return render(request, 'profiles/profile_detail.html', context)
+
+
 @login_required
 def edit_profile(request):
     """Allows the logged-in user to edit their profile."""
@@ -44,6 +46,7 @@ def edit_profile(request):
         form = UserProfileForm(instance=profile)
 
     return render(request, 'profiles/edit_profile.html', {'form': form})
+
 
 @login_required
 def create_training_plan(request):
@@ -62,6 +65,7 @@ def create_training_plan(request):
 
     return render(request, 'plans/create_plan.html', {'form': form})
 
+
 @login_required
 def add_comment(request, profile_pk):
     """Allows a user to add a comment to another user's profile."""
@@ -77,10 +81,11 @@ def add_comment(request, profile_pk):
             messages.success(request, "Comment added!")
         else:
             messages.error(request, "Error adding comment. Please try again.")
-    return redirect('profile_detail', username=username)
+    return redirect('profile_detail', username=target_profile.user.username)
+
 
 @login_required
-def edit_comment(request, comment_pk):
+def edit_comment(request, comment_id):
     """Allows a user to edit their own comment."""
     comment = get_object_or_404(Comment, id=comment_id)
     # only the author can edit
@@ -112,3 +117,17 @@ def delete_comment(request, comment_id):
     comment.delete()
     messages.success(request, "Comment deleted.")
     return redirect('profile_detail', username=profile_username)
+
+
+@login_required
+def approve_comment(request, comment_id):
+    """Allows a profile owner to approve a comment."""
+    Comment = get_object_or_404(Comment, id=comment_id)
+    # only the profile owner can approve
+    if comment.profile.user != request.user:
+        messages.error(request, "You do not have permission to approve this comment.")
+        return redirect('profile_detail', username=comment.profile.user.username)
+    comment.approved = True
+    comment.save()
+    messages.success(request, "Comment approved.")
+    return redirect('profile_detail', username=comment.profile.user.username)

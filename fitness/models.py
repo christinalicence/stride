@@ -113,6 +113,8 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    approved = models.BooleanField(default=True)  # For moderation if needed
+
     def __str__(self):
         target = self.profile or self.plan
         return f"Comment by {self.author} on {target}"
