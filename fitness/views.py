@@ -142,6 +142,11 @@ def signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save() #Save user
+            profile = user.userprofile
+            profile.display_name = user.username
+            profile.bio = "This user hasn't added a bio yet."
+            profile.save()
+            
             login(request, user) #Log them in
             messages.success(request, "Signup successful!")
             return redirect('profile_detail', username=user.username)  # Redirect to their profile
