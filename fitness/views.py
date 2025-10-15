@@ -21,7 +21,7 @@ def profile_list(request):
 @login_required
 def profile_detail(request, username):
     """Displays detailed profile information."""
-    profile = get_object_or_404(UserProfile, user__username=username) # fetch by username
+    profile, created = UserProfile.objects.get_or_create(user__username=username, defaults={'display_name': username})
     plans = profile.plans.all().order_by('-start_date')
     comments = profile.comments_received.filter(approved=True).order_by('-created_at')
     comment_form = CommentForm()
@@ -146,7 +146,7 @@ def signup(request):
             profile.display_name = user.username
             profile.bio = "This user hasn't added a bio yet."
             profile.save()
-            
+
             login(request, user) #Log them in
             messages.success(request, "Signup successful!")
             return redirect('profile_detail', username=user.username)  # Redirect to their profile
