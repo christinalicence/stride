@@ -123,8 +123,17 @@ class Comment(models.Model):
         ordering = ['-created_at']
 
 
+# Signal to create UserProfile when a new User is created
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        # Only create a profile when a new user is created
-        UserProfile.objects.create(user=instance, display_name=instance.username)
+        UserProfile.objects.create(
+            user=instance,
+            display_name=instance.username  # set display_name to username by default
+        )
+
+# Signal to save UserProfile when User is saved
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    if hasattr(instance, 'userprofile'):
+        instance.userprofile.save()
