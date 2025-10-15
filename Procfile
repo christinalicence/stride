@@ -1,1 +1,1 @@
-web: gunicorn strideai.wsgigit 
+web: gunicorn strideai.wsgi
