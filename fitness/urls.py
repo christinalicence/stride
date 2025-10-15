@@ -2,6 +2,7 @@ from django.urls import path
 from django.shortcuts import redirect
 from . import views
 
+
 urlpatterns = [
     path('signup/', views.signup, name='signup'),  # signup page
     path('profiles/edit/', views.edit_profile, name='edit_profile'),  # specific "edit" URL
@@ -19,7 +20,11 @@ urlpatterns = [
 ]
 
 
+from django.contrib.auth import views as auth_views
 
+urlpatterns += [
+    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
+]
 
 
 
