@@ -45,8 +45,19 @@ class UserProfile(models.Model):
     exercise_days_per_week = models.PositiveIntegerField(default=3, validators=[MinValueValidator(1), MaxValueValidator(7)])
     exercise_duration = models.CharField(max_length=10, choices=DURATION_CHOICES, default='30-60')
 
-    # social
-    followers = models.ManyToManyField('self', symmetrical=False, related_name='following', blank=True)
+    @property
+    def appoved_followers(self):
+        return UserProfile.objects.filter(
+            sent_follow_requests__to_user=self,
+            sent_follow_requests__accepted=True
+        )
+    
+    @property
+    def appoved_following(self):
+        return UserProfile.objects.filter(
+            received_follow_requests__from_user=self,
+            received_follow_requests__accepted=True
+        )
 
     # timestamps
     created_at = models.DateTimeField(auto_now_add=True)
@@ -121,6 +132,21 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class FollowRequest(models.Model):
+    """Model to handle follow requests for private profiles."""
+    from_user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='sent_follow_requests')
+    to_user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='received_follow_requests')
+    created_at = models.DateTimeField(auto_now_add=True)
+    accepted = models.BooleanField(default=False)
+
+    def __str__(self):
+        status = "Accepted" if self.accepted else "Pending"
+        return f"Follow request from {self.from_user} to {self.to_user} - {status}"
+
+    class Meta:
+        unique_together = ('from_user', 'to_user')
 
 
 # Signal to create UserProfile when a new User is created

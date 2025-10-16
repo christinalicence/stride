@@ -1,31 +1,31 @@
 from django.urls import path
 from django.shortcuts import redirect
+from django.contrib.auth import views as auth_views
 from . import views
 
-
 urlpatterns = [
-    path('signup/', views.signup, name='signup'),  # signup page
-    path('profiles/edit/', views.edit_profile, name='edit_profile'),  # specific "edit" URL
-    path('profiles/<int:profile_pk>/comment/', views.add_comment, name='add_comment'),  # comment on profile
-    path('profiles/<str:username>/', views.profile_detail, name='profile_detail'),  # catch-all username
-    path('profiles/', views.profile_list, name='profile_list'),  # list of all profiles
+    # Signup
+    path('signup/', views.signup, name='signup'),
 
-    # Comment  CRUD actions
+    # Account auth
+    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('accounts/profile/', lambda request: redirect('profile_detail', username=request.user.username)),
+
+    # Profiles
+    path('profiles/', views.profile_list, name='profile_list'),  # list of all profiles
+    path('profiles/edit/', views.edit_profile, name='edit_profile'),  # edit current user
+    path('profiles/<int:profile_pk>/comment/', views.add_comment, name='add_comment'),  # comment on profile
+    path('profiles/<str:username>/', views.profile_detail, name='profile_detail'),  # profile detail (catch-all)
+
+    # Comments CRUD
     path('comments/<int:comment_id>/edit/', views.edit_comment, name='edit_comment'),
     path('comments/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
     path('comments/<int:comment_id>/approve/', views.approve_comment, name='approve_comment'),
 
-    # Redirect after login
-    path('accounts/profile/', lambda request: redirect('profile_detail', username=request.user.username)),
+    # Following
+    path('follow/<str:username>/', views.send_follow_request, name='send_follow_request'),
+    path('approve_follow/<int:request_id>/', views.approve_follow_request, name='approve_follow_request'),
 ]
-
-
-from django.contrib.auth import views as auth_views
-
-urlpatterns += [
-    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
-]
-
 
 
 

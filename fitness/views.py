@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib import messages
-from .models import UserProfile, TrainingPlan, Comment
+from .models import UserProfile, TrainingPlan, Comment, FollowRequest
 from .forms import UserProfileForm, CommentForm, TrainingPlanForm
 from django.shortcuts import render, redirect
 
@@ -134,6 +134,28 @@ def approve_comment(request, comment_id):
     comment.save()
     messages.success(request, "Comment approved.")
     return redirect('profile_detail', username=comment.profile.user.username)
+
+
+@login_required
+def send_follow_request(request, username):
+    """Sends a follow request to a user with a private profile."""
+    to_profile = get_object_or_404(UserProfile, user__username=username)
+    from_profile = request.user.userprofile
+
+    # Prevent sending request to self
+    if to_profile == from_profile:
+        messages.error(request, "You cannot follow yourself.")
+        return redirect('profile_detail', username=username)
+    
+
+@login_required
+def approve_follow_request(request, request_id):
+    """Approves a follow request."""
+    follow_request = get_object_or_404(FollowRequest, id=request_id)
+    follow_request.accepted = True
+    follow_request.save()
+    return redirect('profile_detail', username=follow_request.user.username)
+
 
 
 def signup(request):               
