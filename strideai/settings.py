@@ -153,7 +153,7 @@ def login_redirect(user):
     """Redirect user to their profile page after login."""
     return reverse_lazy('profile_detail', kwargs={'username': user.username})
 
-LOGIN_REDIRECT_URL = '/profiles/'
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 # DEFAULT PRIMARY KEY FIELD
