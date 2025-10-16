@@ -16,6 +16,7 @@ from decouple import config
 import dj_database_url
 import sys
 from django.urls import reverse_lazy
+import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -101,6 +102,7 @@ else:
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.herokuapp.com"
+    "https://strideai-3c07c7acd94b.herokuapp.com"
 ]
 
 
@@ -166,3 +168,25 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 # DEFAULT PRIMARY KEY FIELD
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# logging setup for heroku debugging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
