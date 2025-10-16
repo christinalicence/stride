@@ -44,7 +44,7 @@ def edit_profile(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Profile updated successfully.')
-            return redirect('profile_detail', username=profile.user.username) 
+            return redirect('profile_detail', username=profile.user.username)
     else:
         form = UserProfileForm(instance=profile)
 
@@ -72,7 +72,7 @@ def create_training_plan(request):
 @login_required
 def add_comment(request, profile_pk):
     """Allows a user to add a comment to another user's profile."""
-    target_profile = get_object_or_404(UserProfile, pk=profile_pk) 
+    target_profile = get_object_or_404(UserProfile, pk=profile_pk)
     author_profile = get_object_or_404(UserProfile, user=request.user)  # the profile of the commenter
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -125,7 +125,7 @@ def delete_comment(request, comment_id):
 @login_required
 def approve_comment(request, comment_id):
     """Allows a profile owner to approve a comment."""
-    Comment = get_object_or_404(Comment, id=comment_id)
+    comment = get_object_or_404(Comment, id=comment_id)
     # only the profile owner can approve
     if comment.profile.user != request.user:
         messages.error(request, "You do not have permission to approve this comment.")
@@ -157,7 +157,6 @@ def approve_follow_request(request, request_id):
     return redirect('profile_detail', username=follow_request.user.username)
 
 
-
 def signup(request):               
     """Handles user signup."""
     if request.method == 'POST':
@@ -175,3 +174,14 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
+
+
+def home(request):
+    """Home page view with some profiles and example plans."""
+    profiles = UserProfile.objects.all()[:5]  # 5 profiles
+    example_plans = TrainingPlan.objects.all()[:3]  # 3 example plans
+    context = {
+            'profiles': profiles,
+            'example_plans': example_plans,
+        }
+    return render(request, 'home.html', context)

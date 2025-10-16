@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="jumbotron text-center my-4">
+    <h1 class="display-4">Welcome to StrideAI</h1>
+    <p class="lead">Your personal fitness training companion.</p>
+    <hr class="my-4">
+    <p>Track your workouts, follow other athletes, and achieve your fitness goals with AI-powered insights.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'signup' %}" role="button">Get Started</a>
+</div>
+<h2 class="mb-4">Some of our users</h2>
+<ul>
+{% for profile in profiles %}
+<li>
+    <a href="{% url 'profile_detail' profile.pk %}">{{ profile.display_name }}</a>
+    {% if profile.bio %}
+        - {{ profile.bio|truncatewords:10 }}
+    {% endif %}
+    {% if profile.approved_followers.count > 0 %}
+        <span class="badge bg-secondary">{{ profile.approved_followers.count }} Followers</span>
+    {% endif %}
+</li>
+{% endfor %}
+</ul>
+<h2 class="mt-5 mb-4">Recent Training Plans</h2>
+{% if recent_plans %}
+    <ul class="list-group">
+        {% for plan in recent_plans %}
+            <li class="list-group-item">
+                {{ plan.title }} by 
+                <a href="{% url 'profile_detail' plan.profile.pk %}">{{ plan.profile.display_name }}</a> - starts {{ plan.start_date }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No training plans available.</p>
+{% endif %}
+
+{% endblock %}
