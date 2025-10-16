@@ -1,13 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<h1>User Profiles</h1>
 
+{% if profiles %}
+  <ul>
+    {% for profile in profiles %}
+      <li>
+        <a href="{% url 'profile_detail' profile.user.username %}">
+          {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" alt="{{ profile.display_name }}" width="50" height="50">
+          {% endif %}
+          {{ profile.display_name }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No profiles yet.</p>
+{% endif %}
 
-<h1>Profile List</h1>
-{% for profile in profiles %}
-    <div class="profile">
-        <h2><a href="{% url 'profile_detail' profile.user.username %}">
-    {{ profile.display_name }} </a>
-        </h2>
-    </div>
-{% endfor %}
+{% endblock %}

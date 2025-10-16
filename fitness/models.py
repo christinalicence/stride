@@ -46,14 +46,14 @@ class UserProfile(models.Model):
     exercise_duration = models.CharField(max_length=10, choices=DURATION_CHOICES, default='30-60')
 
     @property
-    def appoved_followers(self):
+    def approved_followers(self):
         return UserProfile.objects.filter(
             sent_follow_requests__to_user=self,
             sent_follow_requests__accepted=True
         )
     
     @property
-    def appoved_following(self):
+    def approved_following(self):
         return UserProfile.objects.filter(
             received_follow_requests__from_user=self,
             received_follow_requests__accepted=True
@@ -149,17 +149,3 @@ class FollowRequest(models.Model):
         unique_together = ('from_user', 'to_user')
 
 
-# Signal to create UserProfile when a new User is created
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(
-            user=instance,
-            display_name=instance.username  # set display_name to username by default
-        )
-
-# Signal to save UserProfile when User is saved
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    if hasattr(instance, 'userprofile'):
-        instance.userprofile.save()

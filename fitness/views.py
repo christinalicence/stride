@@ -6,14 +6,18 @@ from django.contrib import messages
 from .models import UserProfile, TrainingPlan, Comment, FollowRequest
 from .forms import UserProfileForm, CommentForm, TrainingPlanForm
 from django.shortcuts import render, redirect
+from django.db.models import Count
 
 # Create your views here.
 
 
 # Public profile view
 def profile_list(request):
-    """Displays a list of user profiles, most followed first."""
-    profiles = UserProfile.objects.all().order_by('-followers')
+    """Displays a list of user profiles."""
+    profiles = UserProfile.objects.all().order_by('display_name')  # ordered alphabetically
+    context = {
+        'profiles': profiles,
+    }
     return render(request, 'profiles/profile_list.html', {'profiles': profiles})
 
 
@@ -21,10 +25,14 @@ def profile_list(request):
 @login_required
 def profile_detail(request, username):
     """Displays detailed profile information."""
-    profile, created = UserProfile.objects.get_or_create(user__username=username, defaults={'display_name': username})
+    profile = get_object_or_404(UserProfile, user__username=username)
     plans = profile.plans.all().order_by('-start_date')
     comments = profile.comments_received.filter(approved=True).order_by('-created_at')
     comment_form = CommentForm()
+
+    # Only show follow button if logged in and not viewing your own profile
+    can_follow = request.user.is_authenticated and request.user != profile.user
+    follow_request_sent = FollowRequest.objects.filter(from_user=request.user.userprofile, to_user=profile).exists() if can_follow else False
 
     context = {
         'profile': profile,
@@ -138,15 +146,26 @@ def approve_comment(request, comment_id):
 
 @login_required
 def send_follow_request(request, username):
-    """Sends a follow request to a user with a private profile."""
-    to_profile = get_object_or_404(UserProfile, user__username=username)
-    from_profile = request.user.userprofile
-
-    # Prevent sending request to self
-    if to_profile == from_profile:
-        messages.error(request, "You cannot follow yourself.")
+    """Sends a follow request to another user."""
+    if request.method == "POST":
+        from_user_profile = request.user.userprofile
+        # Don't allow following yourself
+        if from_user_profile.user.username == username:
+            messages.error(request, "You cannot follow yourself.")
+            return redirect('profile_detail', username=username)
+        to_user_profile = get_object_or_404(UserProfile, user__username=username)
+        # Create follow request if it doesn't exist
+        follow_request, created = FollowRequest.objects.get_or_create(
+            from_user=from_user_profile,
+            to_user=to_user_profile
+        )
+        if created:
+            messages.success(request, f"Follow request sent to {to_user_profile.display_name or username}!")
+        else:
+            messages.info(request, f"You already sent a follow request to {to_user_profile.display_name or username}.")
         return redirect('profile_detail', username=username)
-    
+    return redirect('profile_list')
+
 
 @login_required
 def approve_follow_request(request, request_id):
