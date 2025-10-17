@@ -174,6 +174,11 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 # DEFAULT PRIMARY KEY FIELD
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Celery/Redie  Configuration
+REDIS_URL = config('REDIS_URL', default='redis://localhost:6379/0')
+CELERY_BROKER_URL = os.environ.get('REDIS_URL')
+CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL')
+
 # logging setup for heroku debugging
 LOGGING = {
     'version': 1,
