@@ -23,7 +23,7 @@ urlpatterns = [
     path('comments/<int:comment_id>/approve/', views.approve_comment, name='approve_comment'),
 
     # Following
-    path('follow/<str:username>/', views.send_follow_request, name='send_follow_request'),
+    path('follow/<int:profile_pk>/', views.send_follow_request, name='send_follow_request'),
     path('approve_follow/<int:request_id>/', views.approve_follow_request, name='approve_follow_request'),
 
     # Home page

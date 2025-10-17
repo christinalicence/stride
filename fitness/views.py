@@ -145,25 +145,24 @@ def approve_comment(request, comment_id):
 
 
 @login_required
-def send_follow_request(request, username):
+def send_follow_request(request, profile_pk): 
     """Sends a follow request to another user."""
     if request.method == "POST":
         from_user_profile = request.user.userprofile
-        # Don't allow following yourself
-        if from_user_profile.user.username == username:
+        to_user_profile = get_object_or_404(UserProfile, pk=profile_pk) 
+        if to_user_profile == from_user_profile:
             messages.error(request, "You cannot follow yourself.")
-            return redirect('profile_detail', username=username)
-        to_user_profile = get_object_or_404(UserProfile, user__username=username)
-        # Create follow request if it doesn't exist
+            return redirect('profile_detail', username=to_user_profile.user.username)
         follow_request, created = FollowRequest.objects.get_or_create(
             from_user=from_user_profile,
             to_user=to_user_profile
         )
         if created:
-            messages.success(request, f"Follow request sent to {to_user_profile.display_name or username}!")
+            messages.success(request, f"Follow request sent to {to_user_profile.display_name or to_user_profile.user.username}!")
         else:
-            messages.info(request, f"You already sent a follow request to {to_user_profile.display_name or username}.")
-        return redirect('profile_detail', username=username)
+            messages.info(request, f"You already sent a follow request to {to_user_profile.display_name or to_user_profile.user.username}.")
+    
+        return redirect('profile_detail', username=to_user_profile.user.username)
     return redirect('profile_list')
 
 
@@ -171,9 +170,18 @@ def send_follow_request(request, username):
 def approve_follow_request(request, request_id):
     """Approves a follow request."""
     follow_request = get_object_or_404(FollowRequest, id=request_id)
+    
+    # Security check: Ensure only the recipient can approve the request
+    if follow_request.to_user.user != request.user:
+        messages.error(request, "You do not have permission to approve this request.")
+        return redirect('profile_detail', username=request.user.username)
+        
     follow_request.accepted = True
     follow_request.save()
-    return redirect('profile_detail', username=follow_request.user.username)
+    messages.success(request, f"Follow request from {follow_request.from_user.display_name} approved!")
+    
+    # FIX: Use follow_request.to_user to get the correct username
+    return redirect('profile_detail', username=follow_request.to_user.user.username) 
 
 
 def signup(request):               

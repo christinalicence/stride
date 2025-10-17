@@ -73,8 +73,8 @@ class UserProfile(models.Model):
             "fitness_level": self.fitness_level,
             "exercise_days_per_week": self.exercise_days_per_week,
             "exercise_duration": self.exercise_duration,
-            "followers_count": self.followers.count(),
-            "following_count": self.following.count(),
+            "followers_count": self.approved_followers.count(),
+            "following_count": self.approved_following.count(),
         }
 
     def __str__(self):
