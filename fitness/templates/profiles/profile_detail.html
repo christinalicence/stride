@@ -10,30 +10,41 @@
             <p>{{ profile.bio }}</p>
         {% endif %}
     </div>
-    <div>
-        {% if request.user.userprofile not in profile.approved_followers %}
+      <div>
+        {% if request.user.userprofile not in profile.approved_followers and request.user != profile.user %}
         <form method="post" action="{% url 'send_follow_request' profile.pk %}">
             {% csrf_token %}
             <button type="submit" class="btn btn-primary mb-4">Follow</button>
         </form>
         {% endif %}
     </div>
+    </div>
     <div>
-        <h3>Pending Follow Requests</h3>
-        <ul>
-            {% for fr in request.user.userprofile.recieved_follow_requests.all %}
-                {% if not fr.approved %}
-                <li>
-                    {{ fr.requester.display_name }}
-                    <form method="post" action="{% url 'approve_follow_request' fr.id %}" style="display:inline;">
+       {% if is_owner and pending_follow_requests %}
+    <div class="card my-4 border-warning">
+        <div class="card-header bg-warning-subtle">
+            <h5 class="mb-0">Pending Follow Requests</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for req in pending_follow_requests %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{% url 'profile_detail' req.from_user.user.username %}">
+                        {{ req.from_user.display_name }} ({{ req.from_user.user.username }})
+                    </a>
+                    
+                    <form method="POST" action="{% url 'approve_follow_request' req.id %}" style="display:inline;">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-outline-success">Approve</button>
+                        <button type="submit" class="btn btn-sm btn-success">Approve</button>
                     </form>
                 </li>
-                {% endif %}
-            {% empty %}
-                <li>No pending follow requests.</li>
             {% endfor %}
+        </ul>
+    </div>
+{% elif is_owner %}
+    <div class="alert alert-info my-4" role="alert">
+        You have no pending follow requests.
+    </div>
+{% endif %}
         </ul>
     </div>
 

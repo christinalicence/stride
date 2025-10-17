@@ -30,9 +30,14 @@ def profile_detail(request, username):
     comments = profile.comments_received.filter(approved=True).order_by('-created_at')
     comment_form = CommentForm()
 
-    # Only show follow button if logged in and not viewing your own profile
-    can_follow = request.user.is_authenticated and request.user != profile.user
-    follow_request_sent = FollowRequest.objects.filter(from_user=request.user.userprofile, to_user=profile).exists() if can_follow else False
+    # Follow requests section
+    is_owner = request.user == profile.user
+    pending_follow_requests = []
+    if is_owner:
+        pending_follow_requests = FollowRequest.objects.filter(
+            to_user=profile,
+            accepted=False
+        ).select_related('from_user') 
 
     context = {
         'profile': profile,
