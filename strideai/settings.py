@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'fitness',
+    'django_celery_results',
     'crispy_forms',
     'crispy_bootstrap5',
 ]
