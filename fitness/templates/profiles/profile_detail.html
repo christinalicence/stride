@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container mt-4">
     <div class="card shadow-sm p-4 mb-4">
-        <h2>{{ profile.display_name }}</h2>
+        <h2>{{ profile.display_name|default:profile.user.username }}</h2>
         <p>Username: {{ profile.user.username }}</p>
         {% if profile.bio %}
             <p>{{ profile.bio }}</p>

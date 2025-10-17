@@ -14,11 +14,13 @@ from django.db.models import Count
 # Public profile view
 def profile_list(request):
     """Displays a list of user profiles."""
-    profiles = UserProfile.objects.all().order_by('display_name')  # ordered alphabetically
+    profiles_queryset = UserProfile.objects.all()
+    
+    profiles = profiles_queryset.order_by('display_name')
     context = {
         'profiles': profiles,
     }
-    return render(request, 'profiles/profile_list.html', {'profiles': profiles})
+    return render(request, 'profiles/profile_list.html', context)
 
 
 # Detailed orofile view after logon
