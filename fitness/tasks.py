@@ -8,10 +8,11 @@ from .models import UserProfile, TrainingPlan
 @shared_task
 def generate_training_plan_task(plan_id):
     """Asynchronous task to generate a training plan using the Claude API."""
-    client = Anthropic(api_key=os.getenv('CLAUDE_API_KEY'))
+    client = Anthropic(api_key=os.getenv('CLAUDE_API_KEY', settings.CLAUDE_API_KEY))
     plan = TrainingPlan.objects.get(id=plan_id)
     profile = plan.user
 
+    # Check for previous plan feedback
     feedback_context = "No previous feedback available."
     if plan.previous_plan:
         prev_plan = plan.previous_plan
@@ -24,8 +25,8 @@ def generate_training_plan_task(plan_id):
         Use this information to improve the new training plan.
         """
 
-        # Data from user profile
-        profile_data = {
+    # Data from user profile 
+    profile_data = {
         "fitness_level": profile.fitness_level,
         "exercise_days_per_week": profile.exercise_days_per_week,
         "exercise_duration": profile.exercise_duration,
@@ -37,10 +38,10 @@ def generate_training_plan_task(plan_id):
         "long_term_injuries": profile.long_term_injuries,
         "injury_limitations": profile.injury_limitations,
         "minor_injuries": profile.minor_injuries,
-        }
+    }
 
-        # Define output format
-        PLAN_SCHEMA = {
+    # Define output format
+    PLAN_SCHEMA = {
         "type": "object",
         "properties": {
             "plan_summary": {"type": "string", "description": "A concise, actionable, and encouraging summary for the next two weeks."},
@@ -78,18 +79,18 @@ def generate_training_plan_task(plan_id):
                                 "required": ["suggested_day", "workout_title", "total_length_minutes", "exercises"]
                             }
                         }
-                    }
+                    },
+                    "required": ["week_number", "focus", "workouts"]
                 }
             }
         },
         "required": ["plan_summary", "plan_weeks"]
     }
-        
 
-# Construct the prompt
+    # Construct the prompt
     prompt = f"""
-    You are an expert fitness coach. Create a personalized 2-week training plan for the user based on their profile and previous plan feedback.
-        Your primary is to generate a safe, effective, and engaging plan that aligns with their goals and limitations.and that is ONLY in the specified JSON format.
+You are an expert fitness coach. Create a personalized 2-week training plan for the user based on their profile and previous plan feedback.
+Your primary goal is to generate a safe, effective, and engaging plan that aligns with their goals and limitations.
 
 Previous Plan Feedback:
 {feedback_context}
@@ -102,34 +103,34 @@ Current Goals:
 User Profile: {json.dumps(profile_data, indent=2)}
 
 RULES FOR GENERATION:
-    1. The plan MUST contain exactly two weeks (week_number 1 and 2).
-    2. The total number of workouts per week MUST match the user's "days_per_week" field. Use 'Rest Day' for non-training days.
-    3. Every workout MUST detail multiple specific exercises, their type, a clear intensity measure, and sets/reps/distance in the 'details' field.
-    4. The intensity field must use RPE (1-10) for strength, or HR zones/speed guidance for cardio.
-    """
+1. The plan MUST contain exactly two weeks (week_number 1 and 2).
+2. The total number of workouts per week MUST match the user's "days_per_week" field. Use 'Rest Day' for non-training days.
+3. Every workout MUST detail multiple specific exercises, their type, a clear intensity measure, and sets/reps/distance in the 'details' field.
+4. The intensity field must use RPE (1-10) for strength, or HR zones/speed guidance for cardio.
+5. Take into account any injuries or limitations mentioned in the user profile.
+"""
 
     try:
-     # Call the Claude API
-     response = client.messages.create(
-            model="claude-3-5-sonnet-20240620", 
+        # Call the Claude API
+        response = client.messages.create(
+            model="claude-sonnet-4-20250514",  
             max_tokens=4096,
             system="You are an expert personal trainer who ONLY responds with a single, valid JSON object following the provided schema.",
             messages=[{"role": "user", "content": prompt}],
-            # Make it give structured JSON output
             tool_choice={"type": "tool", "name": "get_plan_json"},
             tools=[{"name": "get_plan_json", "description": "Generates the 2-week fitness plan.", "input_schema": PLAN_SCHEMA}]
         )
         
-        # Claude wraps the JSON inside a tool call structure
-        json_content = response.content[0].text
-        ai_data = json.loads(json_content)
+        # Extract JSON 
+        tool_use_block = response.content[0]
+        ai_data = tool_use_block.input
 
         # Update the plan model instance
         plan.plan_json = ai_data.get('plan_weeks', [])
         plan.plan_summary = ai_data.get('plan_summary', 'Plan generated successfully.')
         plan.save()
         
-    except (json.JSONDecodeError, IndexError, AttributeError) as e:
+    except (json.JSONDecodeError, IndexError, AttributeError, KeyError) as e:
         # Handle API or JSON parsing errors
         print(f"Error processing Claude response for plan {plan_id}: {e}")
         plan.plan_summary = f"Generation failed due to API/JSON error: {e}"

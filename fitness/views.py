@@ -15,7 +15,7 @@ from django.db.models import Count
 def profile_list(request):
     """Displays a list of user profiles."""
     profiles_queryset = UserProfile.objects.all()
-    
+
     profiles = profiles_queryset.order_by('display_name')
     context = {
         'profiles': profiles,
@@ -23,7 +23,7 @@ def profile_list(request):
     return render(request, 'profiles/profile_list.html', context)
 
 
-# Detailed orofile view after logon
+# Detailed profile view after logon
 @login_required
 def profile_detail(request, username):
     """Displays detailed profile information."""
@@ -76,7 +76,8 @@ def create_training_plan(request):
             plan = form.save(commit=False)
             plan.user = request.user.userprofile
             plan.save()
-            messages.success(request, "Training plan request submitted! AI generation pending.")
+            generate_training_plan_task.delay(plan.pk) # trigger async task
+            messages.success(request, "Training plan request submitted! AI generation is in progress.")
             return redirect('plan_detail', pk=plan.pk)
     else:
         form = TrainingPlanForm()

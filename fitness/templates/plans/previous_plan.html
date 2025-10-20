@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %} 
+    <h1>Previous Training Plan: {{ plan.title }}</h1>
+    <p>Start Date: {{ plan.start_date }}</p>
+    <p>Created At: {{ plan.created_at }}</p>
+
+    <h3>Plan Details:</h3>
+ 
+{% endblock %}

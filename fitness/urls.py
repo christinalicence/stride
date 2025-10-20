@@ -9,6 +9,7 @@ urlpatterns = [
 
     # Account auth
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('accounts/profile/', lambda request: redirect('profile_detail', username=request.user.username)),
 
     # Profiles
@@ -25,6 +26,11 @@ urlpatterns = [
     # Following
     path('follow/<int:profile_pk>/', views.send_follow_request, name='send_follow_request'),
     path('approve_follow/<int:request_id>/', views.approve_follow_request, name='approve_follow_request'),
+
+    # Training Plans
+    path('plans/create/', views.create_training_plan, name='create_training_plan'),
+    path('plan/previous/', views.previous_plans, name='previous_plans'),
+    path('plans/<int:pk>/', views.plan_detail, name='plan_detail'),
 
     # Home page
     path('', views.home, name='home'),
