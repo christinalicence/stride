@@ -70,8 +70,10 @@ def edit_profile(request):
 def create_training_plan(request):
     """Allows the user to create a new training plan."""
     user_profile = get_object_or_404(UserProfile, user=request.user)
+    last_plan = TrainingPlan.objects.filter(user=user_profile).order_by('-start_date').first()
+
     if request.method == 'POST':
-        form = TrainingPlanForm(request.POST)
+        form = PlanGenerationForm(request.POST)
         if form.is_valid():
             plan = form.save(commit=False)
             plan.user = request.user.userprofile
@@ -80,9 +82,31 @@ def create_training_plan(request):
             messages.success(request, "Training plan request submitted! AI generation is in progress.")
             return redirect('plan_detail', pk=plan.pk)
     else:
-        form = TrainingPlanForm()
+        form = PlanGenerationForm()
 
-    return render(request, 'plans/create_plan.html', {'form': form})
+    context = {
+        'form' : form,
+        'last_plan' : last_plan
+    }
+
+    return render(request, 'plans/create_plan.html', context)
+
+
+@login_required
+def previous_plans(request):
+    """Displays a list of the user's previously generated training plans"""
+    user_profile = get_object_or_404(UserProfile user=request.user)
+    plans = TrainingPlan.objects.filter(user=user_profile).order_by(-'start_date')
+    context = {'plans' : plans}
+    return render (request, 'previous_plan.html, context')
+
+
+@login_required
+def plan_detail(request, pk):
+    """Displays the detailed view of a training plan"""
+    plan = get_object_or_404(TrainingPlan, pk=pk, user__user=request.user) #Only user can see their plan
+    context = {'plan' : plan}
+    return render(request, 'plans/plan_detail.html', context)
 
 
 @login_required
