@@ -1,15 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import CreateView, ListView, DetailView
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib import messages
-from .forms import TrainingPlanForm, CommentForm, UserProfileForm
+from .forms import TrainingPlanForm, CommentForm, UserProfileForm, PlanGenerationForm
 from .models import UserProfile, TrainingPlan, Comment, FollowRequest
-from .tasks import generate_plan_task
+from .tasks import generate_training_plan_task
 
 # Create your views here.
 
@@ -18,7 +15,6 @@ from .tasks import generate_plan_task
 def profile_list(request):
     """Displays a list of user profiles."""
     profiles_queryset = UserProfile.objects.all()
-
     profiles = profiles_queryset.order_by('display_name')
     context = {
         'profiles': profiles,
@@ -49,6 +45,8 @@ def profile_detail(request, username):
         'plans': plans,
         'comments': comments,
         'comment_form': comment_form,
+        'is_owner': is_owner,
+        'pending_follow_requests': pending_follow_requests,
     }
     return render(request, 'profiles/profile_detail.html', context)
 
@@ -74,20 +72,21 @@ def create_training_plan(request):
     """Allows the user to create a new training plan."""
     user_profile = get_object_or_404(UserProfile, user=request.user)
     last_plan = TrainingPlan.objects.filter(user=user_profile).order_by('-start_date').first()
+    
     if request.method == 'POST':
         form = PlanGenerationForm(request.POST)
         if form.is_valid():
             plan = form.save(commit=False)
             plan.user = request.user.userprofile
-            plan.save()
-            plan.plan_json
-
-            #Link to previous plan
+            plan.plan_json = {}  # Initialize empty JSON - will be filled by Celery task
+            
+            # Link to previous plan if it exists
             if last_plan:
                 plan.previous_plan = last_plan
+            
             plan.save()
             
-            #Trigger async celery task
+            # Trigger async celery task
             generate_training_plan_task.delay(plan.pk)
             messages.success(request, "Training plan request submitted! AI generation is in progress.")
             return redirect('plan_detail', pk=plan.pk)
@@ -95,8 +94,8 @@ def create_training_plan(request):
         form = PlanGenerationForm()
 
     context = {
-        'form' : form,
-        'last_plan' : last_plan
+        'form': form,
+        'last_plan': last_plan
     }
 
     return render(request, 'plans/create_plan.html', context)
@@ -105,17 +104,17 @@ def create_training_plan(request):
 @login_required
 def previous_plans(request):
     """Displays a list of the user's previously generated training plans"""
-    user_profile = get_object_or_404(UserProfile user=request.user)
-    plans = TrainingPlan.objects.filter(user=user_profile).order_by(-'start_date')
-    context = {'plans' : plans}
-    return render (request, 'previous_plan.html, context')
+    user_profile = get_object_or_404(UserProfile, user=request.user)
+    plans = TrainingPlan.objects.filter(user=user_profile).order_by('-start_date')
+    context = {'plans': plans}
+    return render(request, 'plans/previous_plans.html', context)
 
 
 @login_required
 def plan_detail(request, pk):
     """Displays the detailed view of a training plan"""
-    plan = get_object_or_404(TrainingPlan, pk=pk, user__user=request.user) #Only user can see their plan
-    context = {'plan' : plan}
+    plan = get_object_or_404(TrainingPlan, pk=pk, user__user=request.user)  # Only user can see their plan
+    context = {'plan': plan}
     return render(request, 'plans/plan_detail.html', context)
 
 
@@ -230,13 +229,13 @@ def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save() #Save user
+            user = form.save()  # Save user
             profile = user.userprofile
             profile.display_name = user.username
             profile.bio = "This user hasn't added a bio yet."
             profile.save()
 
-            login(request, user) #Log them in
+            login(request, user)  # Log them in
             messages.success(request, "Signup successful!")
             return redirect('profile_detail', username=user.username)  # Redirect to their profile
     else:
@@ -249,7 +248,7 @@ def home(request):
     profiles = UserProfile.objects.all()[:5]  # 5 profiles
     example_plans = TrainingPlan.objects.all()[:3]  # 3 example plans
     context = {
-            'profiles': profiles,
-            'example_plans': example_plans,
-        }
+        'profiles': profiles,
+        'example_plans': example_plans,
+    }
     return render(request, 'home.html', context)
