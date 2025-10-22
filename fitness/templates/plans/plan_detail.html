@@ -8,7 +8,7 @@
 <p>Summary: {{ plan.plan_summary }}</p>
 <div>{% if plan.planjson %}
     <h3>Detailed Plan Data (JSON)</h3>
-        <pre>{{ plan.planjson }}</pre>
+        <pre>{{ plan.plan_json }}</pre>
     {% else %}
         <p>Generating...... Or failing.....</p>
 {% endif %}

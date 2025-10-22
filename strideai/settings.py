@@ -104,6 +104,10 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    if 'test' in sys.argv:
+        DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
+    
+
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.herokuapp.com,"
