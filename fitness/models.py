@@ -118,7 +118,7 @@ class TrainingPlan(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='plans')
     # The JSON from Claude is stored here
     plan_json = models.JSONField()
-    plan_summary = models.CharField(max_length=400, blank=True)
+    plan_summary = models.TextField(null=True, blank=True)
     goal_type = models.CharField(max_length=20, choices=[('strength','Strength'),('cardio','Cardio'),('combined','Combined')], default='combined')
     target_event = models.CharField(max_length=100, blank=True, help_text="E.g., '5K run', '10K cycle', 'Half marathon', 'Marathon', 'General fitness'")
     target_date = models.DateField(blank=True, null=True)
