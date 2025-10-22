@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-
 {% block content %}
+<div>
 <h1>AI Generated Plan</h1>
-<h2> Plan Overview</h2>
-<p> {{ plan.plan_summary }}</p>
-<p>Goal Type</p>
-<p> {{ plan.goal_type | default:"Combined" }}</p>
-
-{% if plan.planjson %}
-<p> {{ plan.plan_json }}</p>
-{% else %}
-<p> Generating...... Or failing.....</p>
+<h2>Plan Overview</h2>
+<p>Goal Type: {{ plan.goal_type | default:"Combined" }}</p>
+<p>Summary: {{ plan.plan_summary }}</p>
+<div>{% if plan.planjson %}
+    <h3>Detailed Plan Data (JSON)</h3>
+        <pre>{{ plan.planjson }}</pre>
+    {% else %}
+        <p>Generating...... Or failing.....</p>
+{% endif %}
+</div>
+</div>
+{% endblock %}

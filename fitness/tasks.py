@@ -13,13 +13,12 @@ logger = logging.getLogger(__name__)
 def generate_training_plan_task(plan_id):
     """Asynchronous task to generate a training plan using the Claude API."""
     client = Anthropic(api_key=os.getenv('CLAUDE_API_KEY', settings.CLAUDE_API_KEY))
-    
+    #Error checking
     try:
         plan = TrainingPlan.objects.get(id=plan_id)
     except TrainingPlan.DoesNotExist:
         logger.error(f"TrainingPlan with id {plan_id} does not exist")
-        return
-    
+        return   
     profile = plan.user
 
     # Check for previous plan feedback
@@ -191,3 +190,10 @@ RULES FOR GENERATION:
         plan.plan_summary = f"Generation failed unexpectedly: {str(e)}"
         plan.plan_json = {"error": error_msg}
         plan.save()
+
+
+# Celery Tester
+@shared_task
+def test_celery():
+    print("✅ Celery test task executed successfully!")
+    return "Celery is working fine!"
