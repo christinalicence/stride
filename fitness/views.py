@@ -1,12 +1,11 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import CreateView, ListView, DetailView
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
-from django.contrib import messages
-from .models import UserProfile, TrainingPlan, Comment, FollowRequest
-from .forms import UserProfileForm, CommentForm, TrainingPlanForm
-from django.shortcuts import render, redirect
-from django.db.models import Count
+from django.utils.decorators import method_decorator
+from django.conf import settings
+from .forms import TrainingPlanForm
+from .models import UserProfile, TrainingPlan
+from .tasks import generate_plan_task
 
 # Create your views here.
 

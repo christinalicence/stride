@@ -50,18 +50,19 @@
 
     <div class="card shadow-sm p-4 mb-4">
         <h3>Training Plans</h3>
-        {% if plans %}
-            <ul class="list-group">
-                {% for plan in plans %}
-                    <li class="list-group-item">
-                        {{ plan.title }} - starts {{ plan.start_date }}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No training plans yet.</p>
+        {% if user.is_authenticated and user == profile.user %}
+            <a href="{% url 'create_plan' %}">Create New AI Training Plan</a>
         {% endif %}
-    </div>
+            <a href="{% url 'previous_plans' %}">View Previous Plans ({{ previous_plans|length }})</a>
+
+{% if previous_plans %}
+    <h2>Latest Plan Summary</h2>
+{% with latest_plan=previous_plans.0 %}
+    <h3>{{ latest_plan.target_event|default:"General Goal" }} Plan (Created: {{ latest_plan.created_at|date:"M d, Y" }})</h3>
+    <p>Summary: {{ latest_plan.plan_summary|default:"Processing..." }}</p>
+    <a href="{% url 'plan_detail' latest_plan.pk %}">View Details</a>
+{% endwith %}
+{% endif %}
 
     <div class="card shadow-sm p-4 mb-4">
         <h3>Comments</h3>

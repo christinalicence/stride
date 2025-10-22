@@ -2,6 +2,7 @@ from django.urls import path
 from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
 from . import views
+from . import forms
 
 urlpatterns = [
     # Signup
@@ -29,8 +30,9 @@ urlpatterns = [
 
     # Training Plans
     path('plans/create/', views.create_training_plan, name='create_training_plan'),
-    path('plan/previous/', views.previous_plans, name='previous_plans'),
-    path('plans/<int:pk>/', views.plan_detail, name='plan_detail'),
+    path('plans/', views.PreviousPlansView.as_view(), name='previous_plans'),
+    path('plans/<int:pk>/', views.PlanDetailView.as_view(), name='plan_detail'),
+    path('plans/', views.PreviousPlansView.as_view(), name='previous_plans'),
 
     # Home page
     path('', views.home, name='home'),
