@@ -30,9 +30,8 @@ urlpatterns = [
 
     # Training Plans
     path('plans/create/', views.create_training_plan, name='create_training_plan'),
-    path('plans/', views.PreviousPlansView.as_view(), name='previous_plans'),
-    path('plans/<int:pk>/', views.PlanDetailView.as_view(), name='plan_detail'),
-    path('plans/', views.PreviousPlansView.as_view(), name='previous_plans'),
+    path('plans/', views.previous_plans, name='previous_plans'),
+    path('plans/<int:pk>/', views.plan_detail, name='plan_detail'),
 
     # Home page
     path('', views.home, name='home'),

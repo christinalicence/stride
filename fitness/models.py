@@ -6,6 +6,7 @@ from django.dispatch import receiver
 
 # Create your models here.
 
+
 class UserProfile(models.Model):
     DURATION_CHOICES = [
         ('0-30', '0-30 minutes'),
@@ -23,18 +24,50 @@ class UserProfile(models.Model):
     equipment_text = models.TextField(
         blank=True,
         null=True,
-        help_text="List your available equipment (e.g., dumbbells 5 -12kg, resistance bands medium, exercise bike, etc.)"
+        help_text=(
+            "List your available equipment "
+            "(e.g., dumbbells 5–12kg, resistance bands medium, exercise bike, etc.)"
+        ),
     )
 
-    # private physical info
-    weight_kg = models.FloatField(blank=True, null=True, help_text="kg(private)")
-    height_cm = models.FloatField(blank=True, null=True, help_text="cm(private)")
-    age = models.PositiveIntegerField(blank=True, null=True, help_text="years(private)")
+    # Private physical info
+    weight_kg = models.FloatField(
+        blank=True,
+        null=True,
+        help_text="kg (private)"
+    )
+    height_cm = models.FloatField(
+        blank=True,
+        null=True,
+        help_text="cm (private)"
+    )
+    age = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        help_text="years (private)"
+    )
     fitness_level = models.CharField(
         max_length=20,
-        choices=[('beginner', 'Beginner'), ('intermediate', 'Intermediate'), ('advanced', 'Advanced')],
+        choices=[
+            ('beginner', 'Beginner'),
+            ('intermediate', 'Intermediate'),
+            ('advanced', 'Advanced'),
+        ],
         blank=True,
-        help_text="(private)")
+        help_text="(private)"
+    )
+    gender = models.CharField(
+        max_length=20,
+        choices=[
+            ('male', 'Male'),
+            ('female', 'Female'),
+            ('other', 'Other'),
+            ('prefer_not_to_say', 'Prefer not to say'),
+        ],
+        blank=True,
+        null=True,
+        help_text="(private)"
+    )
     
     # injuries & accessibility 
     long_term_injuries = models.TextField(blank=True, null=True, help_text="Please describe any long-term limitations (describe functional limitations).")
@@ -147,5 +180,3 @@ class FollowRequest(models.Model):
 
     class Meta:
         unique_together = ('from_user', 'to_user')
-
-

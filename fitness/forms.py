@@ -9,7 +9,7 @@ class UserProfileForm(forms.ModelForm):
         model = UserProfile
         exclude = ['user', 'created at', 'updated_at']
         widgets = {
-            'bio':forms.Textarea(atrrs={'rows: 4'}),
+            'bio':forms.Textarea(attrs={'rows': 4}),
             'equipment_text': forms.Textarea(attrs={'rows': 3}),
             'long_term_injuries': forms.Textarea(attrs={'rows': 3}),
             'minor_injuries': forms.Textarea(attrs={'rows': 3},)
