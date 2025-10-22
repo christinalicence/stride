@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, ListView, DetailView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.conf import settings
-from .forms import TrainingPlanForm
-from .models import UserProfile, TrainingPlan
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.contrib import messages
+from .forms import TrainingPlanForm, CommentForm, UserProfileForm
+from .models import UserProfile, TrainingPlan, Comment, FollowRequest
 from .tasks import generate_plan_task
 
 # Create your views here.
@@ -210,8 +214,7 @@ def approve_follow_request(request, request_id):
     follow_request.accepted = True
     follow_request.save()
     messages.success(request, f"Follow request from {follow_request.from_user.display_name} approved!")
-    
-    # FIX: Use follow_request.to_user to get the correct username
+  
     return redirect('profile_detail', username=follow_request.to_user.user.username) 
 
 
