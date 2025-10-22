@@ -74,14 +74,21 @@ def create_training_plan(request):
     """Allows the user to create a new training plan."""
     user_profile = get_object_or_404(UserProfile, user=request.user)
     last_plan = TrainingPlan.objects.filter(user=user_profile).order_by('-start_date').first()
-
     if request.method == 'POST':
         form = PlanGenerationForm(request.POST)
         if form.is_valid():
             plan = form.save(commit=False)
             plan.user = request.user.userprofile
             plan.save()
-            generate_training_plan_task.delay(plan.pk) # trigger async task
+            plan.plan_json
+
+            #Link to previous plan
+            if last_plan:
+                plan.previous_plan = last_plan
+            plan.save()
+            
+            #Trigger async celery task
+            generate_training_plan_task.delay(plan.pk)
             messages.success(request, "Training plan request submitted! AI generation is in progress.")
             return redirect('plan_detail', pk=plan.pk)
     else:
