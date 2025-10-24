@@ -105,7 +105,7 @@ def create_training_plan(request):
 def previous_plans(request):
     """Displays a list of the user's previously generated training plans"""
     user_profile = get_object_or_404(UserProfile, user=request.user)
-    plans = TrainingPlan.objects.filter(user=user_profile).order_by('-start_date')
+    plans = TrainingPlan.objects.filter(user=request.user.userprofile).order_by('-target_date')
     context = {'plans': plans}
     return render(request, 'plans/previous_plans.html', context)
 
