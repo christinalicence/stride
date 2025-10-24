@@ -7,6 +7,7 @@ from fitness.forms import UserProfileForm, TrainingPlanForm, PlanGenerationForm,
 
 class TestUserProfileForm(TestCase):
     def test_valid_data(self):
+        """Tests the user profile form works with valid data"""
         form = UserProfileForm(data={
             'bio': 'Runner',
             'equipment_text': 'Skipping rope',
@@ -20,6 +21,7 @@ class TestUserProfileForm(TestCase):
         assert form.is_valid()
 
     def test_missing_required_fields(self):
+        """Tests the form doesn't work without required fields"""
         form = UserProfileForm(data={
             'exercise_days_per_week': '',
             'exercise_duration': '',
@@ -27,6 +29,7 @@ class TestUserProfileForm(TestCase):
         assert not form.is_valid()
 
     def test_optional_fields_blank(self):
+        """Tests the form works with only required fields filled in"""
         form = UserProfileForm(data={
             'exercise_days_per_week': 3,
             'exercise_duration': '31-60',
@@ -35,6 +38,7 @@ class TestUserProfileForm(TestCase):
 
 
 class TestTrainingPlanForm(TestCase):
+    """Tests training plan for works with valid data added"""
     def test_valid_data(self):
         form = TrainingPlanForm(data={
             'goal_type': 'cardio',  
@@ -46,15 +50,17 @@ class TestTrainingPlanForm(TestCase):
         assert form.is_valid()
     
     def test_optional_fields_are_blank(self):
+        """Tests the form works with optional fields left blank"""
         form = TrainingPlanForm(data={
             'goal_type': 'cardio',
-            'target_event': '',  # optional field left blank
+            'target_event': '', 
             'progress_comment': '',
             'minor_injuries': '',
         })
         assert form.is_valid()
 
     def test_past_target_date_invalid(self):
+        """Tests the form doesn't work with a target date in the past"""
         form = TrainingPlanForm(data={
             'target_date': date.today() - timedelta(days=1),
         })
@@ -63,6 +69,7 @@ class TestTrainingPlanForm(TestCase):
 
 class TestPlanGenerationForm(TestCase):
     def test_valid_with_optional_fields(self):
+        """Tests Plan Generation Form works with optional fields filled out"""
         form = PlanGenerationForm(data={
             'goal_type': 'cardio',
             'target_event': '10K run',
@@ -75,6 +82,7 @@ class TestPlanGenerationForm(TestCase):
         assert form.is_valid()
     
     def test_without_optional_fields(self):
+        """Tests form works with only required fields"""
         form = PlanGenerationForm(data={
             'goal_type': 'strength',
             'target_event': '5K run',
@@ -87,10 +95,11 @@ class TestPlanGenerationForm(TestCase):
 
 class TestCommentForm(TestCase):
     def test_valid_comment(self):
+        """Tests the comment for works with a comment"""
         form = CommentForm(data={'content': 'Great plan!'})
         assert form.is_valid()
 
     def test_empty_comment_invalid(self):
+        """Tests the comment form fails without a comment"""
         form = CommentForm(data={'content': ''})
         assert not form.is_valid()
-        
