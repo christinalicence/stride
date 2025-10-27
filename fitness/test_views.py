@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.test import TestCase
-from fitness.models import UserProfile, TrainingPlan
+from fitness.models import UserProfile, TrainingPlan, Comment, FollowRequest
 from fitness.forms import UserProfileForm, PlanGenerationForm
 import datetime
 import json
@@ -122,3 +122,68 @@ class FitnessViewsTest(TestCase):
         self.assertTemplateUsed(response, 'plans/previous_plans.html')
         # Check that the plans appear in the context and in order
         self.assertEqual(list(response.context['plans']), [plan1, plan2])
+
+        # Comments tests 
+
+    def test_add_comment(self):
+        """ Tests you can add a comment"""
+        self.client.login(username='user1', password='test_password1')
+        url = reverse('add_comment', args=[self.profile2.pk])
+        post_data = {'content': 'plan comment'}
+        response = self.client.post(url, post_data)
+        comment = Comment.objects.filter(author=self.profile1, profile=self.profile2).last()
+        self.assertIsNotNone(comment)            
+        self.assertEqual(comment.content, 'plan comment')
+        self.assertRedirects(response, reverse('profile_detail', args=[self.profile2.user.username]))
+
+    def test_edit_comment(self):
+        """Tests you can edit a comment"""
+        comment = Comment.objects.create(author=self.profile1, profile=self.profile2, content='Original comment')
+        self.client.login(username='user1', password='test_password1')
+        url = reverse('edit_comment', args=[comment.pk])
+        post_data = {'content': 'Updated'}
+        response = self.client.post(url, post_data)
+        comment.refresh_from_db()
+        self.assertEqual(comment.content, 'Updated')
+        self.assertRedirects(response, reverse('profile_detail', args=[self.profile2.user.username]))
+
+    def test_delete_comment(self):
+        """Tests you can delete a comment"""
+        comment = Comment.objects.create(author=self.profile1, profile=self.profile2, content='To delete')
+        self.client.login(username='user1', password='test_password1')
+        url = reverse('delete_comment', args=[comment.pk])
+        response = self.client.post(url)
+        self.assertFalse(Comment.objects.filter(pk=comment.pk).exists())
+        self.assertRedirects(response, reverse('profile_detail', args=[self.profile2.user.username]))
+
+    def test_approve_comment(self):
+        """Tests you can approve a comment"""
+        comment = Comment.objects.create(author=self.profile2, profile=self.profile1, content='Pending', approved=False)
+        self.client.login(username='user1', password='test_password1')
+        url = reverse('approve_comment', args=[comment.pk])
+        response = self.client.post(url)
+        comment.refresh_from_db()
+        self.assertTrue(comment.approved)
+        self.assertRedirects(response, reverse('profile_detail', args=[self.profile1.user.username]))
+
+        # Tests for follows
+
+    def test_send_follow_request(self):
+        """Tests if follow requests send and redirect"""
+        self.client.login(username='user1', password='test_password1')
+        url = reverse('send_follow_request', args=[self.profile2.pk])
+        response = self.client.post(url)
+        fr = FollowRequest.objects.filter(from_user=self.profile1, to_user=self.profile2).last()
+        self.assertIsNotNone(fr)
+        self.assertFalse(fr.accepted)
+        self.assertRedirects(response, reverse('profile_detail', args=[self.profile2.user.username]))
+
+    def test_approve_follow_request(self):
+        """Tests if you can approve follow requests, then redirects"""
+        fr = FollowRequest.objects.create(from_user=self.profile2, to_user=self.profile1, accepted=False)
+        self.client.login(username='user1', password='test_password1')
+        url = reverse('approve_follow_request', args=[fr.pk])
+        response = self.client.post(url)
+        fr.refresh_from_db()
+        self.assertTrue(fr.accepted)
+        self.assertRedirects(response, reverse('profile_detail', args=[self.profile1.user.username]))
