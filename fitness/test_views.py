@@ -166,6 +166,29 @@ class FitnessViewsTest(TestCase):
         self.assertTrue(comment.approved)
         self.assertRedirects(response, reverse('profile_detail', args=[self.profile1.user.username]))
 
+    def test_add_reply_comment(self):
+        """Tests you can reply to an exisiting comment"""
+        parent_comment = Comment.objects.create(
+            author=self.profile2,
+            profile=self.profile1,
+            content='Orginial Comment'
+        )
+        self.client.login(username='user1', password='test_password1')
+        # post a reply
+        url = reverse('reply_comment', args=[self.profile1.pk, parent_comment.pk])
+        post_data = {'content': 'Reply to original comment'}
+        response = self.client.post(url, post_data)
+        reply = Comment.objects.filter(
+            author=self.profile1,
+            profile=self.profile1,
+            parent=parent_comment
+        ).last()
+        self.assertIsNotNone(reply)
+        self.assertEqual(reply.content, 'Reply to original comment')
+        self.assertEqual(reply.parent, parent_comment)
+        self.assertRedirects(response, reverse('profile_detail', args=[self.profile1.user.username]))
+
+
         # Tests for follows
 
     def test_send_follow_request(self):

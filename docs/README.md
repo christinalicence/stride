@@ -71,3 +71,14 @@ User D is an influencer with a community of followers. They want to be able to s
 ### f. Fonts
 ### g. Features
 ### h. User Interface Design Decisions
+
+
+### Improvements for Future Releases
+
+The biggest plan for the future of this site is to make it compatable with smart watches so that you can save your workouts to the watches and the watches can evaluate your performance during the workouts. This is why the plans are returned in a json format from the AI, to allow them to be uploaded to a watch or other tracker. You could also do a lighter version by allowing syncing with a phone app.
+
+I'd like to put seperate usernames and display names.
+
+I'd like to set up a private messaging system between users.
+
+I'd like to allow comments to contain photos and for all photos associated with someone's profile to be saved in an area that is easy to access.
