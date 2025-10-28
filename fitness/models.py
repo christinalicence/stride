@@ -154,9 +154,17 @@ class Comment(models.Model):
         blank=True
     )
 
+    """For comment replies 'parent' is set"""
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        related_name='replies',
+        null=True,
+        blank=True
+    )
+
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-
     approved = models.BooleanField(default=True)  # For moderation if needed
 
     def __str__(self):

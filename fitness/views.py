@@ -119,21 +119,23 @@ def plan_detail(request, pk):
 
 
 @login_required
-def add_comment(request, profile_pk):
-    """Allows a user to add a comment to another user's profile."""
-    target_profile = get_object_or_404(UserProfile, pk=profile_pk)
-    author_profile = get_object_or_404(UserProfile, user=request.user)  # the profile of the commenter
+def add_comment(request, profile_id, parent_id=None):
+    """Allows a user to add a comment or a reply to another user's profile."""
+    profile = get_object_or_404(UserProfile, pk=profile_id)
+    parent = get_object_or_404(Comment, pk=parent_id) if parent_id else None
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
-            comment.author = author_profile
-            comment.profile = target_profile
+            comment.author = request.user.userprofile
+            comment.profile = profile
+            comment.parent = parent
             comment.save()
             messages.success(request, "Comment added!")
         else:
             messages.error(request, "Error adding comment. Please try again.")
-    return redirect('profile_detail', username=target_profile.user.username)
+
+    return redirect('profile_detail', username=profile.user.username)
 
 
 @login_required

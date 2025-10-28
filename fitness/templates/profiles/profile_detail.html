@@ -94,39 +94,42 @@
         <ul class="list-group">
             {% for comment in profile.comments_received.all %}
                 {% if comment.approved or profile.user == user %}
-                <li class="list-group-item">
-                    <div>
-                    {{ comment.author.display_name }}: {{ comment.content }}
-                    <p> {{ comment.created_at|date:"M d, Y H:i" }}</p>
-                    </div>
-                    {% if profile.user == user and not comment.approved %}
-                    <!--Show button only to profile owner-->
-                    <a href="{% url 'approve_comment' comment.id %}" class="btn btn-sm btn-outline-success">Approve</a>
-                    {% endif %}
-                    {% if comment.author.user == user %}
-                    <div>
-                        <a href="{% url 'edit_comment' comment.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                        <a href="{% url 'delete_comment' comment.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-                    </div>
-                    {% endif %}
-                </li>
+                    <li class="list-group-item">
+                        <div>
+                            <h4>{{ comment.author.display_name }}</h4>: {{ comment.content }}
+                            <p class="text-muted small">{{ comment.created_at|date:"M d, Y H:i" }}</p>
+                        </div>
+
+                        <!-- Approve/Edit/Delete Buttons -->
+                        {% if profile.user == user and not comment.approved %}
+                            <a href="{% url 'approve_comment' comment.id %}" class="btn btn-sm btn-outline-success">Approve</a>
+                        {% endif %}
+                        {% if comment.author.user == user %}
+                            <a href="{% url 'edit_comment' comment.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <a href="{% url 'delete_comment' comment.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        {% endif %}
+
+                        <!-- Reply Form -->
+                        <form method="post" action="{% url 'reply_comment' profile.pk comment.pk %}" class="mt-2"> 
+                            {% csrf_token %}
+                            <textarea name="content" rows="2" placeholder="Reply..." class="form-control mb-2"></textarea>
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Reply</button>
+                        </form>
+
+                        <!-- Nested Replies -->
+                        {% for reply in comment.replies.all %}
+                            <div class="ms-4 mt-2 border-start ps-3">
+                                <h4>{{ reply.author.display_name }}</h4>: {{ reply.content }}
+                                <p class="text-muted small">{{ reply.created_at|date:"M d, Y H:i" }}</p>
+                            </div>
+                        {% endfor %}
+                    </li>
                 {% endif %}
             {% endfor %}
         </ul>
     {% else %}
         <p>No comments yet.</p>
     {% endif %}
-</div> 
+</div>
 
-<!-- Add a Comment Form Section -->
-<div class="card shadow-sm p-4 mb-4">
-    <h3>Add a Comment</h3>
-    <form method="post" action="{% url 'add_comment' profile.pk %}">
-        {% csrf_token %}
-        {{ comment_form|crispy }}
-        <button type="submit" class="btn btn-primary mt-2">Submit</button>
-    </form>
-</div> 
-
-</div> 
 {% endblock %}
