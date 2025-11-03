@@ -1,0 +1,31 @@
+/*Global Styles*/
+body
+
+
+.big-heading{
+    size: 3rem;
+}
+
+.medium-heading{
+    size: 2rem;
+
+}
+
+.profile-card-short{
+    text-align: left;
+
+}
+
+.profile-card{
+    text-align: left;
+
+}
+
+.card-title{
+    size: 1.3rem;
+    text-decoration: none;
+}
+
+.card-text {
+    word-break: break-all;
+}
