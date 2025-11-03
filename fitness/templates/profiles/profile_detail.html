@@ -92,7 +92,7 @@
     <h3>Comments</h3>
     {% if profile.comments_received.all %}
         <ul class="list-group">
-            {% for comment in profile.comments_received.all %}
+            {% for comment in comments %}
                 {% if comment.approved or profile.user == user %}
                     <li class="list-group-item">
                         <div>

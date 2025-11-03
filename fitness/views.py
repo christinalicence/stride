@@ -28,7 +28,7 @@ def profile_detail(request, username):
     """Displays detailed profile information."""
     profile = get_object_or_404(UserProfile, user__username=username)
     plans = profile.plans.all().order_by('-start_date')
-    comments = profile.comments_received.filter(approved=True).order_by('-created_at')
+    comments = profile.comments_received.filter(approved=True, parent__isnull=True).order_by('-created_at')
     comment_form = CommentForm()
 
     # Follow requests section
