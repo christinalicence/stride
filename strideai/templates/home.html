@@ -1,33 +1,38 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
+
 {% block content %}
-<div class="jumbotron text-center my-4">
-    <h1 class="display-4">Welcome to StrideAI</h1>
-    <p class="lead">Your personal fitness training companion.</p>
-    <hr class="my-4">
-    <p>Track your workouts, follow other athletes, and achieve your fitness goals with AI-powered insights.</p>
+<div class="my-4">
+  <h1 class="display-4, big-heading">Welcome to StrideAI</h1>
+  <p class="lead">Get fit together.</p>
+  <p>Use powerful AI to generate bespoke training plans that really work for you, no matter what your limitations are.</p>
 </div>
-<h2 class="mb-4">Some of our users</h2>
-<ul>
-{% for profile in profiles %}
-    <div class="profile-summary">
-        <a href="{% url 'profile_detail' profile.user.username %}">
-            {{ profile.display_name|default:profile.user.username }}
-        </a>
+
+<!--Featured Profiles-->
+<h2 class="medium-heading mb-4 text-center">Some of Our Users</h2>
+<div class="row g-4 mb-5">
+  {% for profile in profiles|slice:":9" %}
+    <div class="col-md-4 col-sm-6">
+      <div class="card profile-card-short h-100 text-center">
+        {% if profile.profile_picture %}
+          <img src="{{ profile.profile_picture.url }}" class="card-img-top profile-avatar mx-auto mt-3" alt="{{ profile.display_name }}">
+        {% else %}
+          <img src="{% static 'fitness/images/weights.jpg' %}" class="card-img-top profile-avatar mx-auto mt-3" alt="Default profile image">
+        {% endif %}
+        <div class="card-body">
+          <h3 class="card-title mb-1">
+            <a href="{% url 'profile_detail' profile.user.username %}" class="card-text">
+              {{ profile.display_name|default:profile.user.username }}
+            </a>
+          </h3>
+          <p class="card-text text-muted small">{{ profile.bio }}</p>
         </div>
-{% endfor %}
-<h2 class="mt-5 mb-4">Recent Training Plans</h2>
-{% if recent_plans %}
-    <ul class="list-group">
-        {% for plan in recent_plans %}
-            <li class="list-group-item">
-                {{ plan.title }} by 
-                <a href="{% url 'profile_detail' plan.profile.pk %}">{{ plan.profile.display_name }}</a> - starts {{ plan.start_date }}
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No training plans available.</p>
-{% endif %}
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-muted text-center">No user profiles found.</p>
+  {% endfor %}
+</div>
 
 {% endblock %}
