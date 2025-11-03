@@ -11,21 +11,21 @@
     <h2 class="medium-heading mb-3">Following You</h2>
     {% if user.userprofile.approved_followers %}
       <div class="row g-4">
-        {% for following in user.userprofile.approved_following|slice:":6" %}
+        {% for follower in user.userprofile.approved_followers|slice:":6" %}
           <div class="col-md-4 col-sm-6">
-            <div class="card profile-card-short shadow-sm h-100 text-center">
-              {% if following.profile_picture %}
-                <img src="{{ following.profile_picture.url }}" class="card-img-top profile-avatar mx-auto mt-3" alt="{{ following.display_name }}">
+            <div class="card profile-card-short h-100 text-center">
+              {% if follower.profile_picture %}
+                <img src="{{ follower.profile_picture.url }}" class="card-img-top profile-avatar mx-auto mt-3" alt="{{ follower.display_name }}">
               {% else %}
                 <img src="{% static 'fitness/images/weights.jpg' %}" class="card-img-top profile-avatar mx-auto mt-3" alt="Default profile image">
               {% endif %}
               <div class="card-body">
                 <h3 class="card-title mb-1">
-                  <a href="{% url 'profile_detail' following.user.username %}" class="text-decoration-none">
-                    {{ following.display_name|default:following.user.username }}
+                  <a href="{% url 'profile_detail' follower.user.username %}" class="card-text">
+                    {{ follower.display_name|default:follower.user.username }}
                   </a>
                 </h3>
-                <p class="card-text text-muted small">{{ following.bio|default:"This user hasn’t added a bio yet." }}</p>
+                <p class="card-text">{{ follower.bio|default:"This user hasn’t added a bio yet." }}</p>
               </div>
             </div>
           </div>
@@ -35,12 +35,41 @@
       <p class="text-muted">You have no followers yet.</p>
     {% endif %}
 
+    <!-- Following -->
+    <h2 class="medium-heading mt-5 mb-3">You're Following</h2>
+    {% if user.userprofile.approved_following %}
+      <div class="row g-4">
+        {% for following in user.userprofile.approved_following|slice:":6" %}
+          <div class="col-md-4 col-sm-6">
+            <div class="card profile-card-short h-100 text-center">
+              {% if following.profile_picture %}
+                <img src="{{ following.profile_picture.url }}" class="card-img-top profile-avatar mx-auto mt-3" alt="{{ following.display_name }}">
+              {% else %}
+                <img src="{% static 'fitness/images/weights.jpg' %}" class="card-img-top profile-avatar mx-auto mt-3" alt="Default profile image">
+              {% endif %}
+              <div class="card-body">
+                <h3 class="card-title mb-1">
+                  <a href="{% url 'profile_detail' following.user.username %}" class="card-text">
+                    {{ following.display_name|default:following.user.username }}
+                  </a>
+                </h3>
+                <p class="card-text">{{ following.bio|default:"This user hasn’t added a bio yet." }}</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-muted">You're not following anyone yet.</p>
+    {% endif %}
+
   {% else %}
-    <h1 class="big-heading text-center mb-4">Meet Some of Our Users</h1>
+    <!-- Not logged in -->
+    <h1 class="big-heading mb-4">Meet Some of Our Users</h1>
     <div class="row g-4">
       {% for profile in profiles|slice:":6" %}
         <div class="col-md-4 col-sm-6">
-          <div class="card profile-card-short shadow-sm h-100 text-center">
+          <div class="card profile-card-short h-100 text-center">
             {% if profile.profile_picture %}
               <img src="{{ profile.profile_picture.url }}" class="card-img-top profile-avatar mx-auto mt-3" alt="{{ profile.display_name }}">
             {% else %}
@@ -48,11 +77,11 @@
             {% endif %}
             <div class="card-body">
               <h3 class="card-title mb-1">
-                <a href="{% url 'profile_detail' profile.user.username %}" class="text-decoration-none">
+                <a href="{% url 'profile_detail' profile.user.username %}" class="card-text">
                   {{ profile.display_name|default:profile.user.username }}
                 </a>
               </h3>
-              <p class="card-text text-muted small">{{ profile.bio|truncatewords:15 }}</p>
+              <p class="card-text">{{ profile.bio|truncatewords:15 }}</p>
             </div>
           </div>
         </div>
