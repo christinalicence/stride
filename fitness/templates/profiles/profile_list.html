@@ -11,7 +11,7 @@
     <h2 class="medium-heading mb-3">Following You</h2>
     {% if user.userprofile.approved_followers %}
       <div class="row g-4">
-        {% for follower in user.userprofile.approved_followers|slice:":6" %}
+        {% for follower in user.userprofile.approved_followers %}
           <div class="col-md-4 col-sm-6">
             <div class="card profile-card-short h-100 text-center">
               {% if follower.profile_picture %}
@@ -39,7 +39,7 @@
     <h2 class="medium-heading mt-5 mb-3">You're Following</h2>
     {% if user.userprofile.approved_following %}
       <div class="row g-4">
-        {% for following in user.userprofile.approved_following|slice:":6" %}
+        {% for following in user.userprofile.approved_following %}
           <div class="col-md-4 col-sm-6">
             <div class="card profile-card-short h-100 text-center">
               {% if following.profile_picture %}
