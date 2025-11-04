@@ -1,2 +1,2 @@
 web: gunicorn strideai.wsgi
-worker: celery -strideai --loglevel=info
+worker: celery -A strideai worker --loglevel=info
