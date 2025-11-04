@@ -86,3 +86,5 @@ I'd like to allow comments to contain photos and for all photos associated with 
 I'd like to make pages where you can see a list of everyone you are following and a list of all your followers
 
 I'd like to generate some example plans for the homepage to give the user an idea of how they work.
+
+I'd like to change the meta tag refresh on the plan detail.html page to a javascript function to create a more seamless user experience. This would also involve a timer wheel to show that things are happening behind the scenes.

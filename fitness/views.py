@@ -42,7 +42,7 @@ def profile_detail(request, username):
 
     context = {
         'profile': profile,
-        'plans': plans,
+        'previous_plans': plans,
         'comments': comments,
         'comment_form': comment_form,
         'is_owner': is_owner,

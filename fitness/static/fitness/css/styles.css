@@ -22,11 +22,3 @@ body
 
 }
 
-.card-title{
-    size: 1.3rem;
-    text-decoration: none;
-}
-
-.card-text {
-    word-break: break-all;
-}
