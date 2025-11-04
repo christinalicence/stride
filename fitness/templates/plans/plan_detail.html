@@ -1,17 +1,41 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div>
-<h1>AI Generated Plan</h1>
-<h2>Plan Overview</h2>
-<p>Goal Type: {{ plan.goal_type | default:"Combined" }}</p>
-<p>Summary: {{ plan.plan_summary }}</p>
-<div>{% if plan.planjson %}
-    <h3>Detailed Plan Data (JSON)</h3>
-        <pre>{{ plan.plan_json }}</pre>
-    {% else %}
-        <p>Generating...... Or failing.....</p>
-{% endif %}
-</div>
+<div class="container py-4">
+  <div class="card mb-4">
+    <div class="card-body">
+      <h1 class="big-heading mb-3 text-center">AI Generated Plan</h1>
+      <h2 class="medium-heading mb-3 text-center">{{ plan.title|default:"Training Plan" }}</h2>
+      <div class="text-center mb-3">
+        <p>Goal Type: {{ plan.goal_type|default:"Combined" }}</p>
+        <p>Start Date: {{ plan.start_date|date:"F j, Y" }}</p>
+        {% if plan.target_date %}
+          <p>Target Date: {{ plan.target_date|date:"F j, Y" }}</p>
+        {% endif %}
+        {% if plan.summary %}
+          <p class="mt-3">{{ plan.summary }}</p>
+        {% elif plan.plan_summary %}
+          <p class="mt-3">{{ plan.plan_summary }}</p>
+        {% else %}
+          <p>No summary available yet.</p>
+        {% endif %}
+      </div>
+
+      <hr>
+
+      {% if plan.plan_json %}
+        <h3 class="medium-heading mb-3">Detailed Plan</h3>
+        <div class="p-3">
+          <pre>{{ plan.plan_json|safe }}</pre>
+        </div>
+      {% else %}
+        <div class="text-center mt-4">
+          <p>Generating your plan... please check back shortly!</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
 </div>
 {% endblock %}

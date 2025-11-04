@@ -82,3 +82,7 @@ I'd like to put seperate usernames and display names.
 I'd like to set up a private messaging system between users.
 
 I'd like to allow comments to contain photos and for all photos associated with someone's profile to be saved in an area that is easy to access.
+
+I'd like to make pages where you can see a list of everyone you are following and a list of all your followers
+
+I'd like to generate some example plans for the homepage to give the user an idea of how they work.
