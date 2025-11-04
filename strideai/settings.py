@@ -180,8 +180,15 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Celery/Redie  Configuration
-CELERY_BROKER_URL = config('REDIS_URL', default='redis://127.0.0.1:6379/0')
-CELERY_RESULT_BACKEND = config('REDIS_URL', default='redis://127.0.0.1:6379/0')
+REDIS_URL = config('REDIS_URL', default='redis://127.0.0.1:6379/0')
+
+# Because redis/celery were failing security checks in heroku
+if REDIS_URL and REDIS_URL.startswith('rediss://'):
+    CELERY_BROKER_URL = f"{REDIS_URL}?ssl_cert_reqs=none"
+else:
+    CELERY_BROKER_URL = REDIS_URL
+
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_BROKER_TRANSPORT = 'redis'
 
 # API KEYS
