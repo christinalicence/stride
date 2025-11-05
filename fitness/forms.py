@@ -64,28 +64,16 @@ class PlanGenerationForm(forms.ModelForm):
     )
     class Meta:
         model = TrainingPlan
-        fields = ['goal_type', 'target_event', 'target_date', 'progress_comment', 'minor_injuries']
-        widgets = {
-            'target_date': forms.DateInput(attrs={'type': 'date'}),
-            'progress_comment': forms.Textarea(attrs={'rows': 3}),
-            'minor_injuries': forms.Textarea(attrs={'rows': 3}),
-        }
-        labels = {
-            'goal_type': 'Training Goal Type',
-            'target_event': 'Target Event or Goal',
-            'progress_comment': 'Notes about your current fitness level',
-            'minor_injuries': 'Current minor injuries or concerns',
-        }
+        fields = ['minor_injuries', 'last_plan_feedback', 'plan_preferences']
+        widgets = {'minor_injuries': forms.Textarea(attrs={'rows': 3})}
+        labels = {'minor_injuries': 'Current minor injuries or concerns'}
+
         #Helper calls for the AI
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
-            Field('goal_type'),
-            Field('target_event'),
-            Field('target_date'),
-            Field('progress_comment'),
             Field('minor_injuries'),
             Field('last_plan_feedback'),
             Field('plan_preferences'),

@@ -129,25 +129,29 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.display_name or self.user.username
-    
+
 
 class TrainingPlan(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='plans')
-    # The JSON from Claude is stored here
-    plan_json = models.JSONField()
-    plan_summary = models.TextField(null=True, blank=True)
-    goal_type = models.CharField(max_length=20, choices=[('strength','Strength'),('cardio','Cardio'),('combined','Combined')], default='combined')
-    target_event = models.CharField(max_length=100, blank=True, help_text="E.g., '5K run', '10K cycle', 'Half marathon', 'Marathon', 'General fitness'")
+    plan_json = models.JSONField(help_text="JSON containing weeks, workouts, and exercises.")
+    plan_title = models.CharField(max_length=200, blank=True, null=True)
+    plan_summary = models.TextField(blank=True, null=True)
+    goal_type = models.CharField(
+        max_length=20, 
+        choices=[('strength','Strength'),('cardio','Cardio'),('combined','Combined')], 
+        default='combined'
+    )
+    plan_preferences = models.TextField(blank=True, null=True)
+    target_event = models.CharField(max_length=100, blank=True)
     target_date = models.DateField(blank=True, null=True)
+    previous_plan = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+    progress_comment = models.TextField(blank=True, null=True)
+    minor_injuries = models.TextField(blank=True, null=True)
     start_date = models.DateField(auto_now_add=True)
     end_date = models.DateField(blank=True, null=True)
-    previous_plan = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
-    progress_comment = models.TextField(blank=True, null=True)   # user feedback after plan
-    minor_injuries = models.TextField(blank=True, null=True)     # injuries during plan
-
     def __str__(self):
-        return f"Plan for {self.id} for {self.user}"
-    
+        return self.plan_title or f"Plan {self.id} for {self.user}"
+
 
 class Comment(models.Model):
     """Comments made by users on profiles or plans."""
