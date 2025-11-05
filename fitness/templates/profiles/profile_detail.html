@@ -17,22 +17,16 @@
 
 <!-- Edit Profile and Create Training Plan Button for Owner -->
 {% if is_owner %}
-<a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
-<a href="{% url 'create_training_plan' %}" class="btn btn-primary">New Training Plan</a>
-<div>
-    {% if request.user.userprofile not in profile.approved_followers and request.user != profile.user %}
-    <form method="post" action="{% url 'send_follow_request' profile.pk %}">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-primary mb-4">Follow</button>
-    </form>
-    {% endif %}
-</div>
+    <div class="mb-3">
+        <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+        <a href="{% url 'create_training_plan' %}" class="btn btn-success">New Training Plan</a>
+    </div>
 
-<!-- Pending Follow Requests Section -->
+<!-- Pending Follow Requests Section, only for profile owner -->
 <div>
-   {% if is_owner and pending_follow_requests %}
-    <div class="card my-4 border-warning">
-        <div class="card-header bg-warning-subtle">
+   {% if pending_follow_requests %}
+    <div class="card my-4" id="follow-requests-card">
+        <div class="card-header">
             <h5 class="mb-0">Pending Follow Requests</h5>
         </div>
         <ul class="list-group list-group-flush">
@@ -50,24 +44,24 @@
             {% endfor %}
         </ul>
     </div>
-{% elif is_owner %}
-    <div class="alert alert-info my-4" role="alert">
-        You have no pending follow requests.
-    </div>
+ {% else %}
+    <div class="alert alert-info my-4" role="alert">You have no pending follow requests.</div>
 {% endif %}
 </div> 
 
 <!-- Follow Button for other profiles -->
 {% else %}
-{% if request.user.userprofile not in profile.approved_followers %}
-<form method="post" action="{% url 'send_follow_request' profile.pk %}">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-primary">Follow</button></form>
+    <div class="mb-3">
+        {% if not is_following %}
+            <form method="post" action="{% url 'send_follow_request' profile.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Follow</button>
+            </form>
         {% else %}
-        <button class="btn btn-outline-secondary w-100" disabled>Following</button>
+            <button class="btn btn-outline-secondary" disabled>Following</button>
         {% endif %}
-    {% endif %}
-
+    </div>
+{% endif %}
 <!-- Training Plans Section -->
 <div class="card shadow-sm p-4 mb-4">
     <h3>Training Plans</h3>

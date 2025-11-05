@@ -7,12 +7,20 @@ class UserProfileForm(forms.ModelForm):
     """Form for editing user profiles."""
     class Meta:
         model = UserProfile
-        exclude = ['user', 'created at', 'updated_at']
+        fields = ['display_name', 'bio', 'profile_picture', 'equipment_text', 'goal_event', 'goal_date', 'injuries_and_limitations', 'exercise_days_per_week', 'exercise_duration']
         widgets = {
             'bio':forms.Textarea(attrs={'rows': 4}),
             'equipment_text': forms.Textarea(attrs={'rows': 3}),
             'long_term_injuries': forms.Textarea(attrs={'rows': 3}),
-            'minor_injuries': forms.Textarea(attrs={'rows': 3},)
+            'goal_event': forms.TextInput(attrs={'placeholder': 'E.g., 5K run, Marathon'}),
+            'goal_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+        labels = {
+            'bio': 'About Me',
+            'equipment_text': 'My Equipment',
+            'long_term_injuries': 'Long-term Injuries or Limitationa',
+            'goal_event': 'Fitness Goal or Event',
+            'goal_date': 'Target Date for Goal/Event',
         }
 
 

@@ -42,3 +42,9 @@ body {
 
 }
 
+#follow-request-card{
+    text-align: left;
+    background-color: var(--background-color);
+    color: var(--secondary-color);
+
+}

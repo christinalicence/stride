@@ -8,12 +8,6 @@ from django.dispatch import receiver
 
 
 class UserProfile(models.Model):
-    DURATION_CHOICES = [
-        ('0-30', '0-30 minutes'),
-        ('31-60', '31-60 minutes'),
-        ('61-90', '61-90 minutes'),
-        ('91+', '91+ minutes'),
-    ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=100, blank=True)
@@ -70,13 +64,36 @@ class UserProfile(models.Model):
     )
     
     # injuries & accessibility 
-    long_term_injuries = models.TextField(blank=True, null=True, help_text="Please describe any long-term limitations (describe functional limitations).")
-    injury_limitations = models.TextField(blank=True, null=True, help_text="Describe specific movement limitations / accessibility needs.")
-    minor_injuries = models.TextField(blank=True, null=True, help_text="Minor injuries in last 2 weeks (e.g., 'tight hamstring').")
+    injuries_and_limitations = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Describe any long-term injuries, mobility limitations, or accessibility needs."
+    )
 
     # exercise habits
     exercise_days_per_week = models.PositiveIntegerField(default=3, validators=[MinValueValidator(1), MaxValueValidator(7)])
-    exercise_duration = models.CharField(max_length=10, choices=DURATION_CHOICES, default='30-60')
+    exercise_duration = models.CharField(
+        max_length=50,
+        blank=True,
+        help_text="Typical workout length (e.g., '30 mins', '1 hour', 'varies')."
+    )   
+    
+
+    # Personal goal
+    goal_event = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="E.g., '5K run', 'Build muscle', 'Improve flexibility'"
+    )
+    goal_date = models.DateField(
+        blank=True,
+        null=True,
+        help_text="Target date for achieving your goal"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def approved_followers(self):

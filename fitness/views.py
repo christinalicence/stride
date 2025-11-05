@@ -31,6 +31,9 @@ def profile_detail(request, username):
     comments = profile.comments_received.filter(approved=True, parent__isnull=True).order_by('-created_at')
     comment_form = CommentForm()
 
+    # Check if this is the user's own profile
+    is_owner = request.user == profile.user
+
     # Follow requests section
     is_owner = request.user == profile.user
     pending_follow_requests = []
@@ -40,12 +43,19 @@ def profile_detail(request, username):
             accepted=False
         ).select_related('from_user') 
 
+    # Check if current user is already following this profile
+    is_following = False
+    if request.user.is_authenticated and not is_owner:
+        is_following = request.user.userprofile in profile.approved_followers.all()
+
+
     context = {
         'profile': profile,
         'previous_plans': plans,
         'comments': comments,
         'comment_form': comment_form,
         'is_owner': is_owner,
+        'is_following': is_following,
         'pending_follow_requests': pending_follow_requests,
     }
     return render(request, 'profiles/profile_detail.html', context)
