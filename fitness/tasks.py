@@ -119,7 +119,7 @@ Use the `get_plan_json` tool to return the complete plan. Do not include any tex
     try:
         # 1. Call the Claude API
         response = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-haiku-4-5-20251001",  # Haiku 4.5: Fast, cheap, perfect for JSON generation
             max_tokens=4096,
             system="You are an expert trainer returning a single valid JSON object.",
             messages=[{"role": "user", "content": prompt}],
@@ -133,7 +133,7 @@ Use the `get_plan_json` tool to return the complete plan. Do not include any tex
             tool_use = response.content[0]
             if tool_use.name == 'get_plan_json':
                 ai_data = tool_use.input
-                plan.plan_json = ai_data.get("plan_weeks", [])
+                plan.plan_json = ai_data  # Store full plan JSON
                 plan.plan_summary = ai_data.get("plan_summary", "Plan generated.")
                 plan.plan_title = ai_data.get("plan_title", plan.plan_title or "New Training Plan")
                 plan.save()

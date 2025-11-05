@@ -6,51 +6,67 @@
   <div class="card mb-4">
     <div class="card-body">
       <h1 class="big-heading mb-3 text-center">AI Generated Plan</h1>
-      <h2 class="medium-heading mb-3 text-center">{{ plan.title|default:"Training Plan" }}</h2>
-      <div class="text-center mb-3">
+      
+      <h2 class="medium-heading mb-3 text-center">{{ plan.plan_title|default:"Training Plan" }}</h2>
+      <div class="mb-3">
         <p>Goal Type: {{ plan.goal_type|default:"Combined" }}</p>
         <p>Start Date: {{ plan.start_date|date:"F j, Y" }}</p>
         {% if plan.target_date %}
           <p>Target Date: {{ plan.target_date|date:"F j, Y" }}</p>
         {% endif %}
-        {% if plan.summary %}
-          <p class="mt-3">{{ plan.summary }}</p>
-        {% elif plan.plan_summary %}
+        {% if plan.plan_summary %}
           <p class="mt-3">{{ plan.plan_summary }}</p>
         {% else %}
           <p>No summary available yet.</p>
         {% endif %}
-      </div>
-      {% if plan.plan_json %}
+      
+      {% if plan.plan_json and plan.plan_json.error %}
+        <div class="alert alert-danger text-center mt-4" role="alert">
+           Plan Generation Failed: {{ plan.plan_json.error }}
+            <p class="mb-0 mt-2">Please try generating a new plan.</p>
+        </div>
+        
+      {% elif plan.plan_json and plan.plan_json.plan_weeks %}
         <h3 class="medium-heading mb-4">Detailed Plan</h3>   
-        {% for week in plan.plan_json %}
+        
+        {% for week in plan.plan_json.plan_weeks %}
           <div class="week-section mb-4 p-3">
-            <h4 class="h5">Week {{ week.week_number }} - {{ week.focus }}</h4>
-            {% for workout in week.workouts %}
+            <h4 class="h5">Week {{ week.week_number }}</h4>
+            {% for day_data in week.days %}
               <div class="mt-3 p-3 ps-4">
-                <h5 class="h6">{{ workout.day }} - {{ workout.title }} ({{ workout.length_minutes }} mins)</h5>
-                <ul class="list-exercises">
-                  {% for exercise in workout.exercises %}
-                    <li class="mb-2">
-                      {{ exercise.name }} ({{ exercise.type }})
-                      <br>
-                      <small class="ms-3">Intensity: {{ exercise.intensity }} | Details: {{ exercise.details }}</small>
-                    </li>
-                  {% endfor %}
-                </ul>
+                <h5 class="h6">{{ day_data.day }}</h5>
+                {% if day_data.workout|length > 0 and day_data.workout.0.exercise != 'Rest Day' %}
+                  <ul class="list-unstyled">
+                    {% for exercise in day_data.workout %}
+                      <li class="mb-2">
+                        <strong>{{ exercise.exercise }}</strong> 
+                        <span class="badge bg-secondary">{{ exercise.type }}</span>
+                        <br>
+                        <small class="text-muted ms-3">
+                          {{ exercise.sets }} sets {{ exercise.reps }} reps | 
+                          Intensity: {{ exercise.intensity }}/10 RPE
+                        </small>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <p class="text-muted">Rest Day</p>
+                {% endif %}
               </div>
             {% endfor %}
           </div>
         {% endfor %}
-        {% else %}
+        
+      {% else %}
         <div class="text-center mt-4">
-          <p>Generating your plan... this can take a couple of minutes!</p>
-          <!--Meta tag to refresh every 15 seconds if plan isn't generated yet-->
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-3">Generating your plan... this can take a couple of minutes!</p>
           <meta http-equiv="refresh" content="15"> 
         </div>
       {% endif %}
     </div>
   </div>
-
 </div>
 {% endblock %}
