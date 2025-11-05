@@ -1,14 +1,34 @@
+/*Google Fonts*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Macondo&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+/*CSS Variables*/
+:root {
+--background-color: #F8F9FA;
+--main-text-color: #333333;
+--primary-color: #00BCD4;
+--secondary-color: #1C3B53;
+--light-text-color: #FFFFFF;
+--error-color: #DC3545;
+}
+
 /*Global Styles*/
-body
+body {
+    font-family:'jost', sans-serif;
+    background-color: var(--background-color);
+    color: var(--main-text-color);
+
+}
 
 
 .big-heading{
     size: 3rem;
     text-align: center;
+    color: var(--secondary-color);
 }
 
 .medium-heading{
     size: 2rem;
+    color: var(--secondary-color);
 
 }
 
