@@ -4,4 +4,4 @@ from django.contrib.auth.models import User
 
 # Create your tests here.
 
-#Create a test for API call
+# Create a test for API calls to generate training plans
