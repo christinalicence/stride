@@ -10,64 +10,58 @@
     
 </head>
 <body>
-    <nav class="navbar navbar-expand-md px-3 header"> 
-        
-        <div class="d-flex align-items-center">
-            <a class="nav-link-btn header-text me-3" href="{% url 'home' %}">Home</a>
-        </div>
-        
+<nav class="navbar navbar-expand-md header"> 
+    <div class="container-fluid px-3">
+
+        <a class="nav-link-btn header-text me-3" href="{% url 'home' %}">Home</a>
+        <!-- Toggle button for mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarNav">
-            
-            <a class="nav-link-btn header-text me-3 mb-2 mb-md-0 my-1" href="{% url 'profile_list' %}">Find Your Connections</a>
-
-            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center me-auto"> 
+            <!-- Left side navigation -->
+            <div class="navbar-nav me-auto mb-2 mb-md-0">
+                <a class="nav-link-btn header-text me-3 my-1" href="{% url 'profile_list' %}">Find Your Connections</a>
+            </div>
+            <!-- Right side navigation and search -->
+            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3">
                 {% if user.is_authenticated %}
-                    
-                    <div class="d-flex mb-3 mb-md-0"> 
-                        
-                        <a href="{% url 'profile_detail' username=user.username %}" class="nav-link-btn my-1 me-2 me-md-3">My Profile</a>
-                        
+                    <!-- User profile and logout -->
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'profile_detail' username=user.username %}" class="nav-link-btn my-1">My Profile</a>
                         <form method="post" action="{% url 'logout' %}" class="display-inline my-1">
                             {% csrf_token %}
                             <button type="submit" class="nav-link-btn">Sign Out</button>
                         </form>
                     </div>
-                {% endif %}
-            </div>
-
-            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center ms-auto">
-                {% if user.is_authenticated %}
-                    
-                    <div class="d-flex flex-column me-3 align-items-start mb-3">
-                        <small class="header-text">Search for a User:</small>
-                        <form class="d-flex" role="search" method="GET" action="{% url 'search_profiles_by_username' %}">
-                            <input class="form-control me-2" type="search" placeholder="Search User" aria-label="Search" name="q">
-                            <button class="search-btn-white" type="submit">Search</button>
-                        </form>
+                    <!-- Search forms -->
+                    <div class="search-section">
+                        <div class="search-form-group">
+                            <small class="header-text">Search User:</small>
+                            <form class="d-flex" role="search" method="GET" action="{% url 'search_profiles_by_username' %}">
+                                <input class="form-control form-control-sm me-2" type="search" placeholder="Username" aria-label="Search" name="q">
+                                <button class="search-btn-white" type="submit">Go</button>
+                            </form>
+                        </div>
+                        <div class="search-form-group">
+                            <small class="header-text">Search Goal Event:</small>
+                            <form class="d-flex" role="search" method="GET" action="{% url 'search_profiles_by_goal_event' %}">
+                                <input class="form-control form-control-sm me-2" type="search" placeholder="Goal" aria-label="Search" name="q">
+                                <button class="search-btn-white" type="submit">Go</button>
+                            </form>
+                        </div>
                     </div>
-
-                    <div class="d-flex flex-column align-items-start mb-3">
-                        <small class="header-text">Search by Goal:</small>
-                        <form class="d-flex" role="search" method="GET" action="{% url 'search_profiles_by_goal_event' %}">
-                            <input class="form-control me-2" type="search" placeholder="Search Goal" aria-label="Search" name="q">
-                            <button class="search-btn-white" type="submit">Search</button>
-                        </form>
-                    </div>
-
                 {% else %}
-                    <div class="d-flex mb-3 mb-md-0">
-                        <a href="{% url 'login' %}" class="nav-link-btn my-1 me-2 me-md-0">Sign In</a>
+                    <!-- Sign in/up buttons -->
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'login' %}" class="nav-link-btn my-1">Sign In</a>
                         <a href="{% url 'signup' %}" class="nav-link-btn my-1">Sign Up</a>
                     </div>
                 {% endif %}
             </div>
-
         </div>
-    </nav>
+    </div>
+</nav>
     <div class="container mt-4 content-wrapper"> 
         {% if messages %}
             {% for message in messages %}
