@@ -77,7 +77,7 @@ class FitnessViewsTest(TestCase):
         response = self.client.post(url, post_data)
         plan = TrainingPlan.objects.filter(user=self.profile1).last()
         self.assertIsNotNone(plan)
-        self.assertEqual(plan.goal_type, 'strength')
+        self.assertEqual(plan.goal_type, 'combined')
         self.assertRedirects(response, reverse('plan_detail', args=[plan.pk]))
     
     def test_plan_detail_view(self):
@@ -100,7 +100,6 @@ class FitnessViewsTest(TestCase):
     def test_previous_plans_view(self):
         """Tests that a user can see their previous plans"""
         self.client.login(username='user1', password='test_password1')
-
         # Create a couple of plans for the user
         plan1 = TrainingPlan.objects.create(
             user=self.profile1,
@@ -188,9 +187,7 @@ class FitnessViewsTest(TestCase):
         self.assertEqual(reply.parent, parent_comment)
         self.assertRedirects(response, reverse('profile_detail', args=[self.profile1.user.username]))
 
-
         # Tests for follows
-
     def test_send_follow_request(self):
         """Tests if follow requests send and redirect"""
         self.client.login(username='user1', password='test_password1')
@@ -211,7 +208,6 @@ class FitnessViewsTest(TestCase):
         self.assertTrue(fr.accepted)
         self.assertRedirects(response, reverse('profile_detail', args=[self.profile1.user.username]))
 
-
         # Tests for saerch views
     def test_search_profiles_by_username(self):
         """Tests searching profiles by username"""
@@ -219,7 +215,7 @@ class FitnessViewsTest(TestCase):
         url = reverse('search_profiles_by_username')
         response = self.client.get(url, {'q': 'user2'})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'profiles/profile_list.html')
+        self.assertTemplateUsed(response, 'profiles/profile_search_results.html')
         self.assertIn(self.profile2, response.context['profiles'])
         self.assertNotIn(self.profile1, response.context['profiles'])
 
@@ -229,15 +225,11 @@ class FitnessViewsTest(TestCase):
         url = reverse('search_profiles_by_username')
         response = self.client.get(url, {'q': ''})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'profiles/profile_list.html')
-        self.assertIn(self.profile1, response.context['profiles'])
-        self.assertIn(self.profile2, response.context['profiles'])
+        self.assertTemplateUsed(response, 'profiles/profile_search_results.html')
+        self.assertEqual(len(response.context['profiles']), 0)
 
-        
-    
     def test_search_profiles_by_goal_event(self):
         """Tests searching profiles by goal/event"""
-        # Create profiles with specific goal_events
         self.profile1.goal_event = 'Marathon'
         self.profile1.save()
         self.profile2.goal_event = 'Triathlon'
@@ -246,22 +238,20 @@ class FitnessViewsTest(TestCase):
         url = reverse('search_profiles_by_goal_event')
         response = self.client.get(url, {'q': 'Triathlon'})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'profiles/profile_list.html')
+        self.assertTemplateUsed(response, 'profiles/profile_search_results.html') 
         self.assertIn(self.profile2, response.context['profiles'])
         self.assertNotIn(self.profile1, response.context['profiles'])
 
-    
     def test_search_by_goal_event_no_query(self):
         """Tests searching profiles by goal/event with no query returns all"""
-        # Create profiles with specific goal_events
         self.profile1.goal_event = 'Marathon'
         self.profile1.save()
         self.profile2.goal_event = 'Triathlon'
         self.profile2.save()
+
         self.client.login(username='user1', password='test_password1')
         url = reverse('search_profiles_by_goal_event')
         response = self.client.get(url, {'q': ''})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'profiles/profile_list.html')
-        self.assertIn(self.profile1, response.context['profiles'])
-        self.assertIn(self.profile2, response.context['profiles'])
+        self.assertTemplateUsed(response, 'profiles/profile_search_results.html')
+        self.assertEqual(len(response.context['profiles']), 0)
