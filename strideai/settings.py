@@ -166,12 +166,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 
 # LOGIN / LOGOUT REDIRECTS
-def login_redirect(user):
-    """Redirect user to their profile page after login."""
-    return reverse_lazy('profile_detail', kwargs={'username': user.username})
-
-
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/accounts/profile/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 

@@ -21,13 +21,13 @@ body {
 
 
 .big-heading{
-    size: 3rem;
+    font-size: 3rem;
     text-align: center;
     color: var(--secondary-color);
 }
 
 .medium-heading{
-    size: 2rem;
+    font-size: 2rem;
     color: var(--secondary-color);
 
 }
@@ -40,6 +40,12 @@ body {
 .profile-card{
     text-align: left;
 
+}
+
+.profile-picture{
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
 }
 
 #follow-request-card{

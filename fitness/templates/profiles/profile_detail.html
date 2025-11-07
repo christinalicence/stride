@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block content %}
 
@@ -7,12 +8,35 @@
     <h1>Profile</h1>
 
 <!-- User Info Card -->
-<div class="card shadow-sm p-4 mb-4">
-    <h2>{{ profile.display_name|default:profile.user.username }}</h2>
-    <p>Username: {{ profile.user.username }}</p>
+<div class="card p-4 mb-4">
+    <div class="d-flex align-items-center mb-3">
+        {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-picture">
+        {% else %}
+            <img src="{% static 'fitness/images/weights.jpg' %}" alt="Default Profile Picture" class="profile-picture">
+        {% endif %}
+        <div>
+            <h2>{{ profile.display_name|default:profile.user.username }}</h2>
+        </div>
+    </div>
     {% if profile.bio %}
         <p>{{ profile.bio }}</p>
     {% endif %}
+    {% if is_owner or is_following %}
+        {% if profile.goal_event %}
+            <p>Target Goal:{{ profile.goal_event }}{% if profile.goal_date %} (by {{ profile.goal_date|date:"M d, Y" }}){% endif %}</p>
+        {% else %}
+            <p>No specific goals set.</p>
+        {% endif %}
+        {% if profile.injuries_and_limitations %}
+            <p>Injuries/Limitations:{{ profile.injuries_and_limitations }}</p>
+        {% else %}
+            <p>No long-term injuries or limitations listed.</p>
+        {% endif %}
+    {% elif not is_owner and not is_following and not is_authenticated %}
+        <p>Follow to see more details.</p>
+    {% endif %}
+</div>
 </div>
 
 <!-- Edit Profile and Create Training Plan Button for Owner -->
