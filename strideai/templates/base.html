@@ -18,6 +18,14 @@
                 {% csrf_token %}
                 <button type="submit" class="btn btn-outline-danger me-2">Sign Out</button>
             </form>
+            <form class="d-flex me-2" role="search" method="GET" action="{% url 'search_profiles_by_username' %}">
+                <input class="form-control me-2" type="search" placeholder="Search User" aria-label="Search" name="q" style="max-width: 150px;">
+                <button class="btn btn-sm btn-outline-info" type="submit">Search User</button>
+            </form>
+            <form class="d-flex me-3" role="search" method="GET" action="{% url 'search_profiles_by_goal_event' %}">
+                <input class="form-control me-2" type="search" placeholder="Search Goal" aria-label="Search" name="q" style="max-width: 150px;">
+                <button class="btn btn-sm btn-outline-info" type="submit">Search Goal</button>
+            </form>
         {% else %}
             <a href="{% url 'login' %}" class="btn btn-outline-success me-2">Sign In</a>
             <a href="{% url 'signup' %}" class="btn btn-outline-primary">Sign Up</a>

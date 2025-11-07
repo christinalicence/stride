@@ -36,6 +36,10 @@ urlpatterns = [
 
     # Home page
     path('', views.home, name='home'),
+
+    # Search
+    path('search/username/', views.search_profiles_by_username, name='search_profiles_by_username'),
+    path('search/goal/', views.search_profiles_by_goal_event, name='search_profiles_by_goal_event'),
 ]
 
 

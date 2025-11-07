@@ -264,3 +264,4 @@ def home(request):
         'example_plans': example_plans,
     }
     return render(request, 'home.html', context)
+

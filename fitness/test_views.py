@@ -210,3 +210,58 @@ class FitnessViewsTest(TestCase):
         fr.refresh_from_db()
         self.assertTrue(fr.accepted)
         self.assertRedirects(response, reverse('profile_detail', args=[self.profile1.user.username]))
+
+
+        # Tests for saerch views
+    def test_search_profiles_by_username(self):
+        """Tests searching profiles by username"""
+        self.client.login(username='user1', password='test_password1')
+        url = reverse('search_profiles_by_username')
+        response = self.client.get(url, {'q': 'user2'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'profiles/profile_list.html')
+        self.assertIn(self.profile2, response.context['profiles'])
+        self.assertNotIn(self.profile1, response.context['profiles'])
+
+    def test_search_by_username_no_query(self):
+        """Tests searching profiles by username with no query returns all"""
+        self.client.login(username='user1', password='test_password1')
+        url = reverse('search_profiles_by_username')
+        response = self.client.get(url, {'q': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'profiles/profile_list.html')
+        self.assertIn(self.profile1, response.context['profiles'])
+        self.assertIn(self.profile2, response.context['profiles'])
+
+        
+    
+    def test_search_profiles_by_goal_event(self):
+        """Tests searching profiles by goal/event"""
+        # Create profiles with specific goal_events
+        self.profile1.goal_event = 'Marathon'
+        self.profile1.save()
+        self.profile2.goal_event = 'Triathlon'
+        self.profile2.save()
+        self.client.login(username='user1', password='test_password1')
+        url = reverse('search_profiles_by_goal_event')
+        response = self.client.get(url, {'q': 'Triathlon'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'profiles/profile_list.html')
+        self.assertIn(self.profile2, response.context['profiles'])
+        self.assertNotIn(self.profile1, response.context['profiles'])
+
+    
+    def test_search_by_goal_event_no_query(self):
+        """Tests searching profiles by goal/event with no query returns all"""
+        # Create profiles with specific goal_events
+        self.profile1.goal_event = 'Marathon'
+        self.profile1.save()
+        self.profile2.goal_event = 'Triathlon'
+        self.profile2.save()
+        self.client.login(username='user1', password='test_password1')
+        url = reverse('search_profiles_by_goal_event')
+        response = self.client.get(url, {'q': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'profiles/profile_list.html')
+        self.assertIn(self.profile1, response.context['profiles'])
+        self.assertIn(self.profile2, response.context['profiles'])
