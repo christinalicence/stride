@@ -5,19 +5,17 @@
 {% block content %}
 
 <div class="container mt-4">
-    <h1>Profile</h1>
 
-<!-- User Info Card -->
 <div class="card p-4 mb-4">
+    <div>
+    <h1>{{ profile.display_name|default:profile.user.username }}</h1>
+        </div>
     <div class="d-flex align-items-center mb-3">
         {% if profile.profile_picture %}
             <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-picture">
         {% else %}
             <img src="{% static 'fitness/images/weights.jpg' %}" alt="Default Profile Picture" class="profile-picture">
         {% endif %}
-        <div>
-            <h2>{{ profile.display_name|default:profile.user.username }}</h2>
-        </div>
     </div>
     {% if profile.bio %}
         <p>{{ profile.bio }}</p>
@@ -39,14 +37,12 @@
 </div>
 </div>
 
-<!-- Edit Profile and Create Training Plan Button for Owner -->
 {% if is_owner %}
     <div class="mb-3">
         <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
         <a href="{% url 'create_training_plan' %}" class="btn btn-success">New Training Plan</a>
     </div>
 
-<!-- Pending Follow Requests Section, only for profile owner -->
 <div>
    {% if pending_follow_requests %}
     <div class="card my-4" id="follow-requests-card">
@@ -73,7 +69,6 @@
 {% endif %}
 </div> 
 
-<!-- Follow Button for other profiles -->
 {% else %}
     <div class="mb-3">
         {% if not is_following %}
@@ -86,7 +81,6 @@
         {% endif %}
     </div>
 {% endif %}
-<!-- Training Plans Section -->
 <div class="card shadow-sm p-4 mb-4">
     <h3>Training Plans</h3>
     {% if user.is_authenticated and user == profile.user %}
@@ -117,10 +111,24 @@
     {% endif %}
 </div>
 
-<!-- Comments Display Section -->
 <div class="card shadow-sm p-4 mb-4">
     <h3>Chat to Each Other</h3>
-    {% if profile.comments_received.all %}
+    
+    {% if user.is_authenticated and is_owner or user.is_authenticated and is_following or user.is_authenticated and profile in user.userprofile.approved_following.all %}
+    <div style="margin-bottom: 20px;">
+        <form method="post" action="{% url 'add_comment' profile.pk %}"> 
+            {% csrf_token %}
+            {{ comment_form|crispy }}
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+    </div>
+    {% elif user.is_authenticated %}
+        <p class="text-muted">You must be connected to leave a comment on this profile.</p>
+    {% else %}
+        <p>You must <a href="{% url 'login' %}">sign in</a> to leave a comment.</p>
+    {% endif %}
+
+    <hr> {% if comments %}
         <ul class="list-group">
             {% for comment in comments %}
                 {% if comment.approved or profile.user == user %}
@@ -130,7 +138,6 @@
                             <p class="text-muted small">{{ comment.created_at|date:"M d, Y H:i" }}</p>
                         </div>
 
-                        <!-- Approve/Edit/Delete Buttons -->
                         {% if profile.user == user and not comment.approved %}
                             <a href="{% url 'approve_comment' comment.id %}" class="btn btn-sm btn-outline-success">Approve</a>
                         {% endif %}
@@ -139,14 +146,12 @@
                             <a href="{% url 'delete_comment' comment.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
                         {% endif %}
 
-                        <!-- Reply Form -->
                         <form method="post" action="{% url 'reply_comment' profile.pk comment.pk %}" class="mt-2"> 
                             {% csrf_token %}
                             <textarea name="content" rows="2" placeholder="Reply..." class="form-control mb-2"></textarea>
                             <button type="submit" class="btn btn-sm btn-outline-primary">Reply</button>
                         </form>
 
-                        <!-- Nested Replies -->
                         {% for reply in comment.replies.all %}
                             <div class="ms-4 mt-2 border-start ps-3">
                                 <h4>{{ reply.author.display_name }}</h4>: {{ reply.content }}
