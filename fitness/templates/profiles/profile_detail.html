@@ -156,6 +156,13 @@
                             <div class="ms-4 mt-2 border-start ps-3">
                                 <h4>{{ reply.author.display_name }}</h4>: {{ reply.content }}
                                 <p class="text-muted small">{{ reply.created_at|date:"M d, Y H:i" }}</p>
+                                {% if profile.user == user and not reply.approved %}
+                                    <a href="{% url 'approve_comment' reply.id %}" class="btn btn-sm btn-outline-success">Approve Reply</a>
+                                {% endif %}
+                                {% if reply.author.user == user %}
+                                    <a href="{% url 'edit_comment' reply.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                    <a href="{% url 'delete_comment' reply.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     </li>

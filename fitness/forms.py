@@ -1,6 +1,8 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field
+from datetime import date, timedelta
+from django.core.exceptions import ValidationError
 from .models import UserProfile, TrainingPlan, Comment
 
 class UserProfileForm(forms.ModelForm):
@@ -22,6 +24,19 @@ class UserProfileForm(forms.ModelForm):
             'goal_event': 'Fitness Goal or Event',
             'goal_date': 'Target Date for Goal/Event',
         }
+    def clean_goal_date(self):
+        goal_date = self.cleaned_data.get('goal_date')
+
+        if goal_date:
+            today = date.today()
+            one_year_from_now = today + timedelta(days=365) 
+            # Must be a future date
+            if goal_date <= today:
+                raise ValidationError("The target date must be set for a date in the future.")
+            # Must be within the next 12 months
+            if goal_date > one_year_from_now:
+                raise ValidationError("The target date cannot be more than one year away.")
+        return goal_date
 
 
 class TrainingPlanForm(forms.ModelForm):
