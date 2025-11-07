@@ -144,7 +144,6 @@ def add_comment(request, profile_id, parent_id=None):
             messages.success(request, "Comment added!")
         else:
             messages.error(request, "Error adding comment. Please try again.")
-
     return redirect('profile_detail', username=profile.user.username)
 
 

@@ -16,7 +16,89 @@ body {
     font-family:'jost', sans-serif;
     background-color: var(--background-color);
     color: var(--main-text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
+.content-wrapper {
+    flex-grow: 1;
+}
+
+/*Navbar Styles*/
+.header {
+    background-color: var(--secondary-color);
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.header-text {
+    color: var(--light-text-color);
+    font-weight: semi-bold;
+}
+
+.display-inline {
+    display: inline;
+}   
+
+.nav-link-btn {
+    display: inline-block;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    color: var(--light-text-color);
+    border: 1px solid var(--light-text-color);
+    border-radius: .15rem;
+    background-color: transparent; 
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+}
+
+.nav-link-btn:hover,
+.nav-link-btn:focus {
+    color: var(--secondary-color);
+    background-color: var(--light-text-color); 
+    border-color: var(--light-text-color);
+}
+/* Search Button Styles */
+
+.search-btn-white {
+    display: inline-block;
+    padding: .25rem .5rem; 
+    font-size: .875rem; 
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    color: var(--light-text-color);
+    border: 1px solid var(--light-text-color);
+    background-color: transparent;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+}
+
+.search-btn-white:hover,
+.search-btn-white:focus {
+    color: var(--secondary-color);
+    background-color: var(--light-text-color);
+    border-color: var(--light-text-color);
+}
+
+
+/* Custom Footer Styles */
+.footer {
+    background-color: var(--secondary-color);
+    border-top: 3px solid var(--primary-color);
+}
+
+.footer-text {
+    /* Example: Make the footer text light gray */
+    color: var(--light-text-color);
+    font-size: 0.85rem;
 }
 
 
@@ -53,4 +135,10 @@ body {
     background-color: var(--background-color);
     color: var(--secondary-color);
 
+}
+
+/* Fix for moile line styling */
+.vr {
+    background-color: var(--light-text-color);
+    opacity: 1; 
 }
