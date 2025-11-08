@@ -97,6 +97,8 @@ You can comment on plans or profiles to communicate with each other, and the com
 
 ## 3. Technologies Used
 
+I have used Celery to handle the async tasks while making the API calls. I have used Redis to act as a messenger with Celery
+
 ### a. Software Used
 
 The site is built using Python, HTML and CSS on Django 5.2.7. There is a full list of sofware dependencies in the requirements.txt file.
@@ -116,9 +118,15 @@ The site uses Anthropic AI API, model claude-haiku-4-5-20251001. The software as
 
 See Testing.md file for an expalanation of how the site has worked against the user stories, the automated testing strategy and manual testing that has been carried out.
 
+## 6. Security Concerns.
+
+The API key for Anthropic, databse url, Django secret key and Redis key are all stored in .env and have been included in my gitignore, so not uploaded to github.
+
+A security concern tht is ongoing is not having email verification (so people could make multiple accounts and overuse the API leading to high costs). This is something I would look to add in the future.
 
 
-## Improvements for Future Releases
+
+7. ## Improvements for Future Releases
 
 The biggest plan for the future of this site is to make it compatable with smart watches so that you can save your workouts to the watches and the watches can evaluate your performance during the workouts. This is why the plans are returned in a json format from the AI, to allow them to be uploaded to a watch or other tracker. You could also do a lighter version by allowing syncing with a phone app.
 
@@ -133,3 +141,12 @@ I'd like to make pages where you can see a list of everyone you are following an
 I'd like to generate some example plans for the homepage to give the user an idea of how they work.
 
 I'd like to change the meta tag refresh on the plan detail.html page to a javascript function to create a more seamless user experience. This would also involve a timer wheel to show that things are happening behind the scenes.
+
+I'd like to put proper email verification on to the program to improve security.
+
+8. ## Things I have learnt 
+
+
+9. ## Concerns for the future/if I was to put this project live
+
+The thing that would worry me most about putting this project live is the potential for people to make lots of plans and build up the costs for using the AI API.
