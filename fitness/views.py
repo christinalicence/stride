@@ -266,22 +266,36 @@ def home(request):
 
 
 # Search Views
+# In views.py
+
+# Search Views
 def search_profiles_by_username(request):
     """Searches profiles by username."""
-    query = request.GET.get('q')
+    # handle empty or whitespace-only queries
+    query = request.GET.get('q', '').strip()
     profiles = UserProfile.objects.none()
     if query:
-        # Searches the User model's username field (case-insensitive)
+        # search not case sensitive because of __icontains
         profiles = UserProfile.objects.filter(user__username__icontains=query, user__is_active=True).order_by('user__username')
         messages.info(request, f"Found {profiles.count()} profiles matching '{query}'.")
+    else:
+        profiles = UserProfile.objects.filter(user__is_active=True).order_by('user__username')
+        messages.info(request, f"Showing all {profiles.count()} profiles.")
+    if not query:
+        query = ""
     return render(request, 'profiles/profile_search_results.html', {'profiles': profiles, 'query': query, 'search_type': 'Username'})
+
 
 def search_profiles_by_goal_event(request):
     """Searches profiles by their goal event."""
-    query = request.GET.get('q')
+    query = request.GET.get('q', '').strip()
     profiles = UserProfile.objects.none()
     if query:
-        # Searches the UserProfile model's goal_event field (case-insensitive)
         profiles = UserProfile.objects.filter(goal_event__icontains=query, user__is_active=True).order_by('user__username')
         messages.info(request, f"Found {profiles.count()} profiles matching '{query}'.")
-    return render(request, 'profiles/profile_search_results.html', {'profiles': profiles, 'query': query, 'search_type': 'Goal/Event'})
+    else:
+        profiles = UserProfile.objects.filter(user__is_active=True).order_by('user__username')
+        messages.info(request, f"Showing all {profiles.count()} profiles.")
+    if not query:
+        query = "" 
+    return render(request, 'profiles/profile_search_results.html', {'profiles': profiles, 'query': query, 'search_type': 'Goal Event'})

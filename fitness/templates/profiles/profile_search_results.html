@@ -3,7 +3,12 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Search Results for "{{ query }}" ({{ search_type }})</h1>
+    {# Logic to display a different title when the search query is empty #}
+    {% if query %}
+        <h1>Search Results for "{{ query }}" ({{ search_type }})</h1>
+    {% else %}
+        <h1>No profiles found</h1>
+    {% endif %}
     
     {% if messages %}
         {% for message in messages %}
