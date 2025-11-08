@@ -206,13 +206,43 @@ body {
     color: var(--secondary-color);
 }
 
+/* Training Plan Styles */
+.plan-summary-text {
+    line-height: 1.6;
+}
+
+.plan-header {
+    background-color: var(--secondary-color);
+    color: var(--light-text-color);
+}
+
+.day-workout-list-item {
+    padding: 0.5rem;
+    border-left: 3px solid var(--primary-color);
+}
+
+.workout-badge-primary {
+    background-color: var(--primary-color);
+}
+
+.rest-day-badge {
+    background-color: #28a745;
+    color: var(--light-text-color);
+}
+
+.plan-spinner-color {
+    color: var(--primary-color);
+}
+
+
+/* Responsive Adjustments */
+
 /* Fix for mobile line styling */
 .vr {
     background-color: var(--light-text-color);
     opacity: 1; 
 }
 
-/* Responsive adjustments */
 @media (max-width: 767px) {
     .navbar-collapse {
         padding-top: 1rem;
