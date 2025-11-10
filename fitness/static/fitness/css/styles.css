@@ -207,6 +207,16 @@ body {
 }
 
 /* Training Plan Styles */
+.normal-button {
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
 .plan-summary-text {
     line-height: 1.6;
 }
