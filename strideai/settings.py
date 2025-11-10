@@ -54,8 +54,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cloudinary_storage',
     'cloudinary',
-    'fitness',
     'django_celery_results',
+    'fitness',
     'crispy_forms',
     'crispy_bootstrap5',
 ]
@@ -197,6 +197,14 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 # DEFAULT PRIMARY KEY FIELD
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Necessary for CELERY_RESULT_BACKEND = 'django-db'
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}
+
 # Celery/Redie  Configuration
 REDIS_URL = config('REDIS_URL', default='redis://127.0.0.1:6379/0')
 
@@ -206,8 +214,12 @@ if REDIS_URL and REDIS_URL.startswith('rediss://'):
 else:
     CELERY_BROKER_URL = REDIS_URL
 
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_BROKER_TRANSPORT = 'redis'
+
+CELERY_RESULT_BACKEND = 'django-db'
+
+# Inform Celery to use the cache backend for the result storage connection
+CELERY_CACHE_BACKEND = 'default'
 
 # API KEYS
 CLAUDE_API_KEY = config('CLAUDE_API_KEY', default='')
