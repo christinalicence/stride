@@ -33,6 +33,7 @@ urlpatterns = [
     path('plans/create/', views.create_training_plan, name='create_training_plan'),
     path('plans/', views.previous_plans, name='previous_plans'),
     path('plans/<int:pk>/', views.plan_detail, name='plan_detail'),
+    path('plans/<int:pk>/retry/', views.delete_plan_and_retry, name='delete_plan_and_retry'),
 
     # Home page
     path('', views.home, name='home'),

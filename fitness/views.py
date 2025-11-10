@@ -127,6 +127,18 @@ def plan_detail(request, pk):
     context = {'plan': plan}
     return render(request, 'plans/plan_detail.html', context)
 
+@login_required
+def delete_plan_and_retry(request, pk):
+    """Deletes the specific training plan and redirects the user to the plan creation form to retry."""
+    plan = get_object_or_404(TrainingPlan, pk=pk)
+    # Security Check: Ensure the user owns the plan before deletion
+    if plan.user != request.user:
+        messages.error(request, "You are not authorized to delete this plan.")
+        return redirect('plan_detail', pk=pk) 
+    plan.delete()
+    messages.info(request, "Training plan deleted. Please create a new one.")
+    return redirect('create_training_plan')
+
 
 @login_required
 def add_comment(request, profile_id, parent_id=None):
@@ -263,10 +275,6 @@ def home(request):
         'example_plans': example_plans,
     }
     return render(request, 'home.html', context)
-
-
-# Search Views
-# In views.py
 
 # Search Views
 def search_profiles_by_username(request):
