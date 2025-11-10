@@ -46,7 +46,7 @@
                   <li class="list-group-item">
                     <div class="mt-3 p-3 ps-4 day-item-body">
                       <h5 class="h6 day-name">{{ day_data.day }}</h5> 
-                      {% if day_data.workout|length > 0 and day_data.workout.0 == 'Rest Day' %}
+                      {% if day_data.workout|length > 0 and day_data.workout.0.exercise == 'Rest Day' %}
                         <span class="badge rest-day-badge">Rest Day</span>
                       {% else %}
                         <ul class="list-unstyled day-workout-list">

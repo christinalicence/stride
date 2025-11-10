@@ -16,13 +16,19 @@
 
 ## 1. Testing Objectives Against User Stories
 
+## 1. User Experience
+### a. Purpose of the Website
+
+This is a web application designed to help people formulate ongoing exercise plans with the help of AI taking in to account any injuries or limitations, such as a long term knee injury. The application also strives to create a community where you can follow people and comment on their profiles and traning plans. The idea is that the site will be a positivie place that helps people stay fit, healthy, happy and connected, even if they have injures and/or long term limitations in their exercise. The site is designed to one day make it compatible with smart watches (eg Garmin or Apple) to be able to upload your exercise plan on to your watch to follow.
+
 ### b. User Stories
 
 #### First Story
 
-User A has a long term knee injury that means they avoid jumpling and impact. Every exercise plan they find online seems to suggest this as part of their routines and they are looking for a plan that will adapt to their speicific needs.
+User A has a long term knee injury that means they avoid jumpling and high impact exercises. Every exercise plan they find online seems to suggest this as part of their routines and they are looking for a plan that will adapt to their speicific needs.
 
- - They needs to be able to tell the AI that generates the plan about their specific exercise needs for a plan.
+ - They needs to be able to tell the AI that generates the plan about their specific exercise needs for a plan. 
+ - It is useful for them if the site can remember their injury and build long term progression goals/plans.
 
 #### Second Story
 
@@ -32,21 +38,28 @@ User B enjoys personally adapted plans but also wants to reach out to other peop
 
 #### Third Story
 
-User C is part of a friendship group that enjoy exercise. They want to be able to see and discuss their friends plans.
+User C is part of a friendship group that enjoy exercise. They want to be able to see and discuss their friends' plans.
 
-- They need to be able to find the profiles they follow easily and comment on plans.
+- They need to be able to find the profiles they follow easily and comment on profiles.
 
 #### Fourth Story
 
 User D is an influencer with a community of followers. They want to be able to show their followers the plans they are following.
 
 - They need to be able to exapnd on their profile to communicate to their followers.
-- They also need to be able to comment on their own plans as well as other peoples to help engagement.
+- They also need to be able to comment on their own profiles as well as other peoples to help engagement.
 
 
 
 ## 2. Manual Testing
 ### a. Testing Using Code Validators
+
+#### HTML validator
+
+#### CSS Validator
+
+#### Python Standards
+
 ### b. Accessibility and Performance Testing
 ### c. Manual Testing of Features
 ### d. Manual Testing of Responsiveness
@@ -76,6 +89,10 @@ I recieved quite a lot of user feedback when it was tested about 60% through dev
     - You can generate training plans on anyone's profile.
     - You can follow yourself.
     - Changes weren't being saved after editing your profile.
+
+I did another bit of user testing when I around 95% through development.
+
+- 
 
 
 ## 3. Automated Testing.

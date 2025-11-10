@@ -10,8 +10,6 @@ from .models import TrainingPlan
 logger = logging.getLogger(__name__)
 
 # --- JSON SCHEMA DEFINITION ---
-# This is the key to forcing the AI to return valid, structured JSON.
-# It should be defined outside the task for cleaner code.
 PLAN_SCHEMA = {
     "type": "object",
     "properties": {
@@ -32,17 +30,17 @@ PLAN_SCHEMA = {
                                 "day": {"type": "string", "description": "Day of the week (e.g., Monday)."},
                                 "workout": {
                                     "type": "array",
-                                    "description": "List of exercises for the day, or ['Rest Day'].",
+                                    "description": "List of exercises for the day. For rest days, return a single object with exercise='Rest Day'.",
                                     "items": {
                                         "type": "object",
                                         "properties": {
                                             "exercise": {"type": "string"},
-                                            "type": {"type": "string", "enum": ["strength", "cardio", "flexibility"]},
-                                            "sets": {"type": "integer"},
-                                            "reps": {"type": "string", "description": "Use string for reps, time, or distance (e.g., '12', '30 sec', '5 km')."},
-                                            "intensity": {"type": "integer", "description": "RPE (Rate of Perceived Exertion) 1-10."}
+                                            "type": {"type": "string", "enum": ["strength", "cardio", "flexibility", "rest"]},
+                                            "sets": {"type": ["integer", "null"]},
+                                            "reps": {"type": ["string", "null"], "description": "Use string for reps, time, or distance (e.g., '12', '30 sec', '5 km'). Null for rest days."},
+                                            "intensity": {"type": ["integer", "null"], "description": "RPE (Rate of Perceived Exertion) 1-10. Null for rest days."}
                                         },
-                                        "required": ["exercise", "type", "sets", "reps", "intensity"]
+                                        "required": ["exercise", "type"]
                                     }
                                 }
                             },
@@ -57,7 +55,7 @@ PLAN_SCHEMA = {
     "required": ["plan_title", "plan_summary", "plan_weeks"]
 }
 
-# --- TRAINING PLAN GENERATION TASK ---
+# Training plan generation task
 @shared_task
 def generate_training_plan_task(plan_id):
     """Generate a 2-week training plan using Claude API."""
@@ -106,34 +104,42 @@ Previous plan summary and feedback: {feedback_context}
 User profile data: {json.dumps(profile_data, separators=(',', ':'))}
 User preferences/goals: {user_preferences}
 
-**PLAN RULES:**
-1. **Duration:** Exactly 2 weeks, with training days matching `exercise_days_per_week` ({profile.exercise_days_per_week}).
-2. **Rest:** Designate rest days on all non-training days.
-3. **Format:** Each workout must list exercises including the type, intensity (RPE 1-10), and sets/reps/time.
-4. **Safety:** Strictly respect all injuries and available equipment ({profile.equipment_text or 'None'}).
-5. **Time:** The total time for each workout must fit within the user's specified duration ({profile.exercise_duration}).
+PLAN RULES:
+1. Duration: Exactly 2 weeks, with training days matching `exercise_days_per_week` ({profile.exercise_days_per_week}).
+2. Rest Days: For rest days, return EXACTLY ONE exercise object with:
+   - "exercise": "Rest Day"
+   - "type": "rest"
+   - DO NOT include sets, reps, or intensity fields
+   Example: {{"exercise": "Rest Day", "type": "rest"}}
+3. Training Days: Each workout must list exercises including:
+   - exercise name
+   - type (strength/cardio/flexibility)
+   - sets (integer)
+   - reps (string - can be reps, time, or distance like "12", "30 sec", "5 km")
+   - intensity (RPE 1-10)
+4. Safety: Strictly respect all injuries and available equipment ({profile.equipment_text or 'None'}).
+5. Time: The total time for each workout must fit within the user's specified duration ({profile.exercise_duration}).
+
+CRITICAL: Rest days must use the exact format specified in rule 2. Never return an array with the string "Rest Day".
 
 Use the `get_plan_json` tool to return the complete plan. Do not include any text, conversation, or markdown (like ```json) outside of the tool's input.
 """
 
     try:
-        # 1. Call the Claude API
         response = client.messages.create(
-            model="claude-haiku-4-5-20251001",  # Haiku 4.5: Fast, cheap, perfect for JSON generation
+            model="claude-haiku-4-5-20251001",
             max_tokens=4096,
-            system="You are an expert trainer returning a single valid JSON object.",
+            system="You are an expert trainer returning a single valid JSON object. For rest days, always use the object format: {'exercise': 'Rest Day', 'type': 'rest'}",
             messages=[{"role": "user", "content": prompt}],
             tool_choice={"type": "tool", "name": "get_plan_json"},
             tools=[{"name": "get_plan_json", "description": "Generates 2-week plan based on user profile and rules.", "input_schema": PLAN_SCHEMA}]
         )
 
-        # 2. Extract and Parse AI response safely
-        # When using tool_choice, the response content is a list of ToolUse blocks.
         if response.content and response.content[0].type == 'tool_use':
             tool_use = response.content[0]
             if tool_use.name == 'get_plan_json':
                 ai_data = tool_use.input
-                plan.plan_json = ai_data  # Store full plan JSON
+                plan.plan_json = ai_data
                 plan.plan_summary = ai_data.get("plan_summary", "Plan generated.")
                 plan.plan_title = ai_data.get("plan_title", plan.plan_title or "New Training Plan")
                 plan.save()
@@ -143,7 +149,6 @@ Use the `get_plan_json` tool to return the complete plan. Do not include any tex
         else:
              raise ValueError("AI response did not contain a tool use block.")
 
-
     except Exception as e:
         logger.exception(f"Error generating plan {plan_id}: {str(e)}")
         plan.plan_json = {"error": f"Generation failed: {str(e)}"}
@@ -151,7 +156,7 @@ Use the `get_plan_json` tool to return the complete plan. Do not include any tex
         plan.save()
 
 
-# Celery tester (kept for completeness)
+# Celery tester 
 @shared_task
 def test_celery():
     """Simple Celery test to check task execution."""
