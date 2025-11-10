@@ -26,11 +26,7 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
-                            {% if profile.profile_picture %}
-                                <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-picture me-3">
-                            {% else %}
-                                <img src="{% static 'fitness/images/weights.jpg' %}" alt="Default Profile Picture" class="profile-picture me-3">
-                            {% endif %}
+                            <img src="{{ profile.get_profile_picture_url }}" class="card-img-top mx-auto mt-3 profile-picture" alt="{{ profile.display_name }}">
                             <div>
                                 <h5 class="card-title mb-0">{{ profile.display_name|default:profile.user.username }}</h5>
                             </div>

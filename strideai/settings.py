@@ -15,8 +15,13 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 import sys
+from dotenv import load_dotenv
 from django.urls import reverse_lazy
 import logging
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,6 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
+    'cloudinary',
     'fitness',
     'django_celery_results',
     'crispy_forms',
@@ -106,7 +113,24 @@ else:
     }
     if 'test' in sys.argv:
         DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
-    
+
+
+# Cloudinary configuration
+load_dotenv()
+load_dotenv()
+
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET'),
+    secure=True
+)
+
+CLOUDINARY_STORAGE = {
+    'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 CSRF_TRUSTED_ORIGINS = [

@@ -15,11 +15,7 @@
   {% for profile in profiles|slice:":9" %}
     <div class="col-md-4 col-sm-6">
       <div class="card profile-card-short h-100 text-center">
-        {% if profile.profile_picture %}
-          <img src="{{ profile.profile_picture.url }}" class="card-img-top mx-auto mt-3 profile-picture" alt="{{ profile.display_name }}">
-        {% else %}
-          <img src="{% static 'fitness/images/weights.jpg' %}" class="card-img-top profile-picture mx-auto mt-3 profile-picture" alt="Default profile image">
-        {% endif %}
+        <img src="{{ profile.get_profile_picture_url }}" class="card-img-top mx-auto mt-3 profile-picture" alt="{{ profile.display_name }}">
           <div class="card-body">
           <h3 class="card-title mb-1">
             <a href="{% url 'profile_detail' profile.user.username %}" class="card-text">

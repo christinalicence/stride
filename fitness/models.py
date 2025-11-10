@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from cloudinary.models import CloudinaryField
+from django.templatetags.static import static
 
 # Create your models here.
 
@@ -11,7 +13,7 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=100, blank=True)
-    profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
+    profile_picture = CloudinaryField('image', blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
 
     # Equipment info text
@@ -76,8 +78,7 @@ class UserProfile(models.Model):
         max_length=50,
         blank=True,
         help_text="Typical workout length (e.g., '30 mins', '1 hour', 'varies')."
-    )   
-    
+    )
 
     # Personal goal
     goal_event = models.CharField(
@@ -91,6 +92,12 @@ class UserProfile(models.Model):
         null=True,
         help_text="Target date for achieving your goal"
     )
+
+    def get_profile_picture_url(self):
+        """Return Cloudinary URL if exists, otherwise default static image URL."""
+        if self.profile_picture and hasattr(self.profile_picture, 'url'):
+            return self.profile_picture.url
+        return static('fitness/images/weights.jpg')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

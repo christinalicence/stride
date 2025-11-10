@@ -1,6 +1,6 @@
 amqp==5.3.1
 annotated-types==0.7.0
-anthropic==0.71.0
+anthropic==0.72.0
 anyio==4.11.0
 asgiref==3.10.0
 billiard==4.2.2
@@ -12,10 +12,13 @@ click==8.3.0
 click-didyoumean==0.3.1
 click-plugins==1.1.1.2
 click-repl==0.3.0
+cloudinary==1.36.0
 crispy-bootstrap5==2025.6
 distro==1.9.0
 dj-database-url==3.0.1
+dj3-cloudinary-storage==0.0.6
 Django==5.2.7
+django-cloudinary-storage==0.3.0
 django-crispy-forms==2.4
 django-summernote==0.8.20.0
 django_celery_results==2.6.0
@@ -43,7 +46,7 @@ sqlparse==0.5.3
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 tzdata==2025.2
-urllib3==2.5.0
+urllib3==1.26.20
 vine==5.1.0
 wcwidth==0.2.14
 webencodings==0.5.1
