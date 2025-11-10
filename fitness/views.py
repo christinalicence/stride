@@ -122,9 +122,15 @@ def previous_plans(request):
 
 @login_required
 def plan_detail(request, pk):
-    """Displays the detailed view of a training plan"""
-    plan = get_object_or_404(TrainingPlan, pk=pk, user__user=request.user)  # Only user can see their plan
-    context = {'plan': plan}
+    """Displays the detail of a generated training plan."""
+    plan = get_object_or_404(TrainingPlan, pk=pk)
+    is_owner = request.user == plan.user.user  
+    is_complete = bool(plan.plan_json and (plan.plan_json.get('plan_weeks') or plan.plan_json.get('error')))
+    context = {
+        'plan': plan,
+        'is_owner': is_owner,      
+        'is_complete': is_complete, 
+    }
     return render(request, 'plans/plan_detail.html', context)
 
 @login_required
@@ -132,13 +138,12 @@ def delete_plan_and_retry(request, pk):
     """Deletes the specific training plan and redirects the user to the plan creation form to retry."""
     plan = get_object_or_404(TrainingPlan, pk=pk)
     # Security Check: Ensure the user owns the plan before deletion
-    if plan.user != request.user:
+    if plan.user.user != request.user:  
         messages.error(request, "You are not authorized to delete this plan.")
         return redirect('plan_detail', pk=pk) 
     plan.delete()
     messages.info(request, "Training plan deleted. Please create a new one.")
     return redirect('create_training_plan')
-
 
 @login_required
 def add_comment(request, profile_id, parent_id=None):
