@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.test import TestCase
 from fitness.models import UserProfile, TrainingPlan, Comment, FollowRequest
 from fitness.forms import UserProfileForm, PlanGenerationForm
-import datetime
+from datetime import date
 import json
 
 

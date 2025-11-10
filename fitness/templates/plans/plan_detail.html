@@ -45,7 +45,6 @@
                   <li class="list-group-item">
                     <h5 class="h6 mb-2">{{ day_data.day }}</h5>
                     
-                    {# The conditional check ensures that only explicit workouts are shown, and rest days are handled by the else block #}
                     {% if day_data.workout|length > 0 and day_data.workout.0.exercise != 'Rest Day' %}
                       <ul class="list-unstyled ms-3">
                         {% for exercise in day_data.workout %}
@@ -63,7 +62,6 @@
                         {% endfor %}
                       </ul>
                     {% else %}
-                      {# This is the consistent "Rest Day" display #}
                       <span class="badge rest-day-badge">Rest Day</span>
                     {% endif %}
                   </li>
