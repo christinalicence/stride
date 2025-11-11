@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container text-center mt-5">
+        <h1 class="big-heading">Error 500</h1>
+        <h3 class="medium-heading">Sorry, there is a server error.</h3>
+        <a href="{% url 'home' %}" class="btn normal-button">Return to Home</a>
+    </div>
+    {% endblock %}
