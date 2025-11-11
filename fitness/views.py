@@ -35,7 +35,6 @@ def profile_detail(request, username):
     is_owner = request.user == profile.user
 
     # Follow requests section
-    is_owner = request.user == profile.user
     pending_follow_requests = []
     if is_owner:
         pending_follow_requests = FollowRequest.objects.filter(
@@ -43,11 +42,26 @@ def profile_detail(request, username):
             accepted=False
         ).select_related('from_user') 
 
-    # Check if current user is already following this profile
+    # Check if current user is following this profile (they sent a request that was accepted)
     is_following = False
     if request.user.is_authenticated and not is_owner:
-        is_following = request.user.userprofile in profile.approved_followers.all()
-
+        is_following = FollowRequest.objects.filter(
+            from_user=request.user.userprofile,
+            to_user=profile,
+            accepted=True
+        ).exists()
+    
+    # Check if profile owner is following current user back (mutual connection)
+    profile_follows_user = False
+    if request.user.is_authenticated and not is_owner:
+        profile_follows_user = FollowRequest.objects.filter(
+            from_user=profile,
+            to_user=request.user.userprofile,
+            accepted=True
+        ).exists()
+    
+    # Can comment if: owner, following the profile, OR profile follows them back
+    can_comment = is_owner or is_following or profile_follows_user
 
     context = {
         'profile': profile,
@@ -56,6 +70,7 @@ def profile_detail(request, username):
         'comment_form': comment_form,
         'is_owner': is_owner,
         'is_following': is_following,
+        'can_comment': can_comment,
         'pending_follow_requests': pending_follow_requests,
     }
     return render(request, 'profiles/profile_detail.html', context)

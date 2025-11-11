@@ -27,7 +27,7 @@
         {% else %}
             <p>No long-term injuries or limitations listed.</p>
         {% endif %}
-    {% elif not is_owner and not is_following and not is_authenticated %}
+    {% else %}
         <p>Follow to see more details.</p>
     {% endif %}
 </div>
@@ -67,16 +67,17 @@
 
 {% else %}
     <div class="mb-3">
-        {% if not is_following %}
-            <form method="post" action="{% url 'send_follow_request' profile.pk %}">
+        {% if is_following %}
+            <button class="btn outline-button" disabled>Following</button>
+        {% else %}
+            <form method="post" action="{% url 'send_follow_request' profile.pk %}" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit" class="btn normal-button">Follow</button>
             </form>
-        {% else %}
-            <button class="btn outline-button" disabled>Following</button>
         {% endif %}
     </div>
 {% endif %}
+
 <div class="card shadow-sm p-4 mb-4">
     <h3>Training Plans</h3>
     {% if user.is_authenticated and user == profile.user %}
@@ -110,7 +111,7 @@
 <div class="card shadow-sm p-4 mb-4">
     <h3>Chat to Each Other</h3>
     
-    {% if user.is_authenticated and is_owner or user.is_authenticated and is_following or user.is_authenticated and profile in user.userprofile.approved_following.all %}
+    {% if can_comment %}
     <div style="margin-bottom: 20px;">
         <form method="post" action="{% url 'add_comment' profile.pk %}"> 
             {% csrf_token %}
@@ -118,13 +119,12 @@
             <button type="submit" class="btn normal-button">Post Comment</button>
         </form>
     </div>
-    {% elif user.is_authenticated %}
-        <p class="text-muted">You must be connected to leave a comment on this profile.</p>
     {% else %}
-        <p>You must <a href="{% url 'login' %}">sign in</a> to leave a comment.</p>
+        <p class="text-muted">You must be connected to leave a comment on this profile.</p>
     {% endif %}
 
-    <hr> {% if comments %}
+    <hr> 
+    {% if comments %}
         <ul class="list-group">
             {% for comment in comments %}
                 {% if comment.approved or profile.user == user %}
@@ -142,13 +142,16 @@
                             <a href="{% url 'delete_comment' comment.id %}" class="btn btn-sm outline-button">Delete</a>
                         {% endif %}
 
-                        <form method="post" action="{% url 'reply_comment' profile.pk comment.pk %}" class="mt-2"> 
+                        {% if can_comment %}
+                        <form method="post" action="{% url 'add_comment' profile.pk comment.id %}" class="mt-2"> 
                             {% csrf_token %}
                             <textarea name="content" rows="2" placeholder="Reply..." class="form-control mb-2"></textarea>
                             <button type="submit" class="btn btn-sm normal-button">Reply</button>
                         </form>
+                        {% endif %}
 
                         {% for reply in comment.replies.all %}
+                            {% if reply.approved or profile.user == user %}
                             <div class="ms-4 mt-2 border-start ps-3">
                                 <h4>{{ reply.author.display_name }}</h4>: {{ reply.content }}
                                 <p class="text-muted small">{{ reply.created_at|date:"M d, Y H:i" }}</p>
@@ -160,13 +163,14 @@
                                     <a href="{% url 'delete_comment' reply.id %}" class="btn btn-sm outline-button">Delete</a>
                                 {% endif %}
                             </div>
+                            {% endif %}
                         {% endfor %}
                     </li>
                 {% endif %}
             {% endfor %}
         </ul>
     {% else %}
-        <p>No comments yet.</p>
+        <p>No comments yet. Be the first to comment!</p>
     {% endif %}
 </div>
 

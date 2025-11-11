@@ -23,7 +23,13 @@ urlpatterns = [
     path('comments/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
     path('comments/<int:comment_id>/approve/', views.approve_comment, name='approve_comment'),
     path('profiles/<int:profile_id>/comment/', views.add_comment, name='add_comment'),  
-    path('profiles/<int:profile_id>/comment/<int:parent_id>/', views.add_comment, name='reply_comment'), 
+    path('profiles/<int:profile_id>/comment/<int:parent_id>/', views.add_comment, name='add_comment'), 
+
+    # Following
+    path('follow/<int:profile_pk>/', views.send_follow_request, name='send_follow_request'),
+    path('approve_follow/<int:request_id>/', views.approve_follow_request, name='approve_follow_request'),
+
+    # Training Plans
 
     # Following
     path('follow/<int:profile_pk>/', views.send_follow_request, name='send_follow_request'),
