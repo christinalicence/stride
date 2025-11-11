@@ -26,6 +26,26 @@ body {
     flex-grow: 1;
 }
 
+.normal-button {
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.outline-button {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 /*Navbar Styles*/
 .header {
     background-color: var(--secondary-color);
@@ -126,17 +146,6 @@ body {
     border-color: var(--light-text-color);
 }
 
-/* Custom Footer Styles */
-.footer {
-    background-color: var(--secondary-color);
-    border-top: 3px solid var(--primary-color);
-}
-
-.footer-text {
-    color: var(--light-text-color);
-    font-size: 0.85rem;
-}
-
 /* Heading Styles */
 .big-heading{
     font-size: 3rem;
@@ -207,15 +216,6 @@ body {
 }
 
 /* Training Plan Styles */
-.normal-button {
-    background-color: var(--primary-color);
-    color: var(--light-text-color);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
 
 .plan-summary-text {
     line-height: 1.6;
@@ -244,6 +244,16 @@ body {
     color: var(--primary-color);
 }
 
+/* Custom Footer Styles */
+.footer {
+    background-color: var(--secondary-color);
+    border-top: 3px solid var(--primary-color);
+}
+
+.footer-text {
+    color: var(--light-text-color);
+    font-size: 0.85rem;
+}
 
 /* Responsive Adjustments */
 
@@ -268,5 +278,10 @@ body {
     
     .medium-heading {
         font-size: 1.5rem;
+    }
+
+    .search-section {
+        flex-direction: row;
+        gap: 1.5rem;
     }
 }

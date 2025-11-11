@@ -35,8 +35,8 @@
 
 {% if is_owner %}
     <div class="mb-3">
-        <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
-        <a href="{% url 'create_training_plan' %}" class="btn btn-success">New Training Plan</a>
+        <a href="{% url 'edit_profile' %}" class="btn normal-button">Edit Profile</a>
+        <a href="{% url 'create_training_plan' %}" class="btn normal-button">New Training Plan</a>
     </div>
 
 <div>
@@ -54,7 +54,7 @@
                     
                     <form method="POST" action="{% url 'approve_follow_request' req.id %}" style="display:inline;">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                        <button type="submit" class="btn btn-sm outline-button">Approve</button>
                     </form>
                 </li>
             {% endfor %}
@@ -70,10 +70,10 @@
         {% if not is_following %}
             <form method="post" action="{% url 'send_follow_request' profile.pk %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-primary">Follow</button>
+                <button type="submit" class="btn normal-button">Follow</button>
             </form>
         {% else %}
-            <button class="btn btn-outline-secondary" disabled>Following</button>
+            <button class="btn outline-button" disabled>Following</button>
         {% endif %}
     </div>
 {% endif %}
@@ -96,7 +96,7 @@
                         <p class="card-text">
                             {{ plan.plan_summary|default:"Summary being generated or not available."|truncatechars:100 }}
                         </p>
-                        <a href="{% url 'plan_detail' plan.pk %}" class="btn btn-sm btn-info mt-auto">View Details</a>
+                        <a href="{% url 'plan_detail' plan.pk %}" class="btn btn-sm normal-button">View Details</a>
                     </div>
                 </div>
             </div>
@@ -115,7 +115,7 @@
         <form method="post" action="{% url 'add_comment' profile.pk %}"> 
             {% csrf_token %}
             {{ comment_form|crispy }}
-            <button type="submit" class="btn btn-primary">Post Comment</button>
+            <button type="submit" class="btn normal-button">Post Comment</button>
         </form>
     </div>
     {% elif user.is_authenticated %}
@@ -135,17 +135,17 @@
                         </div>
 
                         {% if profile.user == user and not comment.approved %}
-                            <a href="{% url 'approve_comment' comment.id %}" class="btn btn-sm btn-outline-success">Approve</a>
+                            <a href="{% url 'approve_comment' comment.id %}" class="btn btn-sm outline-button">Approve</a>
                         {% endif %}
                         {% if comment.author.user == user %}
-                            <a href="{% url 'edit_comment' comment.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                            <a href="{% url 'delete_comment' comment.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                            <a href="{% url 'edit_comment' comment.id %}" class="btn btn-sm outline-button">Edit</a>
+                            <a href="{% url 'delete_comment' comment.id %}" class="btn btn-sm outline-button">Delete</a>
                         {% endif %}
 
                         <form method="post" action="{% url 'reply_comment' profile.pk comment.pk %}" class="mt-2"> 
                             {% csrf_token %}
                             <textarea name="content" rows="2" placeholder="Reply..." class="form-control mb-2"></textarea>
-                            <button type="submit" class="btn btn-sm btn-outline-primary">Reply</button>
+                            <button type="submit" class="btn btn-sm normal-button">Reply</button>
                         </form>
 
                         {% for reply in comment.replies.all %}
@@ -153,11 +153,11 @@
                                 <h4>{{ reply.author.display_name }}</h4>: {{ reply.content }}
                                 <p class="text-muted small">{{ reply.created_at|date:"M d, Y H:i" }}</p>
                                 {% if profile.user == user and not reply.approved %}
-                                    <a href="{% url 'approve_comment' reply.id %}" class="btn btn-sm btn-outline-success">Approve Reply</a>
+                                    <a href="{% url 'approve_comment' reply.id %}" class="btn btn-sm normal-button">Approve Reply</a>
                                 {% endif %}
                                 {% if reply.author.user == user %}
-                                    <a href="{% url 'edit_comment' reply.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                                    <a href="{% url 'delete_comment' reply.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    <a href="{% url 'edit_comment' reply.id %}" class="btn btn-sm outline-button">Edit</a>
+                                    <a href="{% url 'delete_comment' reply.id %}" class="btn btn-sm outline-button">Delete</a>
                                 {% endif %}
                             </div>
                         {% endfor %}

@@ -79,9 +79,23 @@ Here is the report for the home page
 
 Lighthouse did uncover an issue on my traning plans where ther buttons colours used didn't have sufficient contrast.
 
-![Image of Buttons in secondary colour](docs/docs-images/button-contrast.png)
+![buttons in old colour](docs/docs-images/button-contrast.png)
 
 As accessibility is a core part of the ethos of this site I changed the buttons to a darker colour.
+
+![buttons in new colour](docs/docs-images/button-contrast-new.png)
+
+It also picked up on Cloudinary leaving 3rd party cookies as part of it's best practice report on profile pages where an image was being stored.
+
+![78% Best Practice Score on Lighthouse](docs/docs-images/cloudinary-error1.png)
+
+It also showed that it was leaving a marker for the cookies on the issues panel
+
+![Issues warning showing on Lighthouse](docs/docs-images/cloudinary-error2.png)
+
+As I feel that Cloudinary is a useful part of this site I hae decided not to change it, despite these warnings.
+
+These were the only issues across the site found by Lighthouse.
 
 
 ### c. Manual Testing of Features
@@ -96,7 +110,6 @@ There are lots of tests written and contained in the files test_forms.py, test_t
 
 I adopted test driven development part way through this project and started to understand the real benefits of this approach. It has made my code more robust and less prone to errors. It also makes me think about exactly what function I want it to perform before writing it.
 
-## 2. Manual Testing
 
 ### e. User Testing/Feedback
 

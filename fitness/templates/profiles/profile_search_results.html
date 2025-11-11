@@ -34,8 +34,10 @@
                         
                         {% if profile.goal_event %}
                             <p class="card-text small">Goal: {{ profile.goal_event|truncatechars:70 }}</p>
+                        {% else %}
+                            <p class="card-text small text-muted">No specific goals set.</p>
                         {% endif %}
-                        <a href="{% url 'profile_detail' profile.user.username %}" class="btn btn-sm btn-primary mt-2">View Profile</a>
+                        <a href="{% url 'profile_detail' profile.user.username %}" class="btn normal-button">View Profile</a>
                     </div>
                 </div>
             </div>
