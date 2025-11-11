@@ -56,11 +56,34 @@ User D is an influencer with a community of followers. They want to be able to s
 
 #### HTML validator
 
+All the HTML pages were passed the [W3C HTML Validation Tester](https://validator.w3.org/)
+
+
+
+
 #### CSS Validator
+
+The site passed the [W3C CSS Validation Test](https://jigsaw.w3.org/css-validator/) without errors
+
+![Error free CSS test](docs/docs-images/css-test.png)
 
 #### Python Standards
 
 ### b. Accessibility and Performance Testing
+
+The pages were tested using Google Lighthouse for performance, accessibility and Best Practice.
+
+Here is the report for the home page
+![Google Lighthouse Report](docs/docs-images/lighthouse-home.png)
+
+
+Lighthouse did uncover an issue on my traning plans where ther buttons colours used didn't have sufficient contrast.
+
+![Image of Buttons in secondary colour](docs/docs-images/button-contrast.png)
+
+As accessibility is a core part of the ethos of this site I changed the buttons to a darker colour.
+
+
 ### c. Manual Testing of Features
 ### d. Manual Testing of Responsiveness
 ### e. User Testing/Feedback

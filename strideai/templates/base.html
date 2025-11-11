@@ -27,9 +27,9 @@
             <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3">
                 {% if user.is_authenticated %}
                     <!-- User profile and logout -->
-                    <div class="d-flex gap-2">
+                    <div class="d-flex gap-2 align-items-center">
                         <a href="{% url 'profile_detail' username=user.username %}" class="nav-link-btn header-text me-3 my-1">My Profile</a>
-                        <form method="post" action="{% url 'logout' %}" class="display-inline my-1">
+                        <form method="post" action="{% url 'logout' %}" style="display:inline-block;">
                             {% csrf_token %}
                             <button type="submit" class="nav-link-btn header-text me-3 my-1">Sign Out</button>
                         </form>

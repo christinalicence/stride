@@ -209,17 +209,19 @@ A security concern tht is ongoing is not having email verification (so people co
 
 7. ## Improvements for Future Releases
 
-The biggest plan for the future of this site is to make it compatable with smart watches so that you can save your workouts to the watches and the watches can evaluate your performance during the workouts. This is why the training plans are returned in a json format from the AI, to allow them to be uploaded to a watch or other tracker. You could also do a lighter version by allowing syncing with a phone app.
+- The biggest plan for the future of this site is to make it compatable with smart watches so that you can save your workouts to the watches and the watches can evaluate your performance during the workouts. This is why the training plans are returned in a json format from the AI, to allow them to be uploaded to a watch or other tracker. You could also do a lighter version by allowing syncing with a phone app.
 
-I'd like to set up a private messaging system between users. I feel that this would be a useful social aspect for the site.
+- I'd like to set up a private messaging system between users. I feel that this would be a useful social aspect for the site.
 
-I'd like to allow comments to contain photos and for all photos associated with someone's profile to be saved in an area that is easy to access.
+- I'd like to allow comments to contain photos and for all photos associated with someone's profile to be saved in an area that is easy to access.
 
-I'd like to be able to widen the comments to include commentting on people's plans.
+- I'd like to be able to widen the comments to include commentting on people's plans.
 
-I'd like to put proper email verification on to the program to improve security. This is a feature I would add before making the website live.
+- I'd like to put proper email verification on to the program to improve security. This is a feature I would add before making the website live.
 
-I would also improve the visual look of the site with more photos and graphics.
+- I'd like to be able to filter the input that people make to the AI more effectively. I believe there are ways of using the AI to do this, which I would like to explore in the future.
+
+- I would also improve the visual look of the site with more photos and graphics.
 
 8. ## Credits
 
