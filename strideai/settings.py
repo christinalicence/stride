@@ -116,26 +116,34 @@ else:
 
 
 # Cloudinary configuration
-load_dotenv()
-load_dotenv()
+# If running locally, load .env
+if os.path.exists(Path(__file__).resolve().parent.parent / '.env'):
+    from dotenv import load_dotenv
+    load_dotenv()
+
+CLOUDINARY_CLOUD_NAME = os.getenv('CLOUDINARY_CLOUD_NAME')
+CLOUDINARY_API_KEY = os.getenv('CLOUDINARY_API_KEY')
+CLOUDINARY_API_SECRET = os.getenv('CLOUDINARY_API_SECRET')
 
 cloudinary.config(
-    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
-    api_key=os.getenv('CLOUDINARY_API_KEY'),
-    api_secret=os.getenv('CLOUDINARY_API_SECRET'),
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_API_SECRET,
     secure=True
 )
 
 CLOUDINARY_STORAGE = {
-    'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
+    'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
+    'API_KEY': CLOUDINARY_API_KEY,
+    'API_SECRET': CLOUDINARY_API_SECRET,
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.herokuapp.com,"
-    "https://strideai-3c07c7acd94b.herokuapp.com"
+    "https://*.herokuapp.com",
+    "https://strideai-3c07c7acd94b.herokuapp.com",
 ]
 
 

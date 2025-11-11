@@ -28,10 +28,10 @@
                 {% if user.is_authenticated %}
                     <!-- User profile and logout -->
                     <div class="d-flex gap-2">
-                        <a href="{% url 'profile_detail' username=user.username %}" class="nav-link-btn my-1">My Profile</a>
+                        <a href="{% url 'profile_detail' username=user.username %}" class="nav-link-btn header-text me-3 my-1">My Profile</a>
                         <form method="post" action="{% url 'logout' %}" class="display-inline my-1">
                             {% csrf_token %}
-                            <button type="submit" class="nav-link-btn">Sign Out</button>
+                            <button type="submit" class="nav-link-btn header-text me-3 my-1">Sign Out</button>
                         </form>
                     </div>
                     <!-- Search forms -->
