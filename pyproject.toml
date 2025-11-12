@@ -1,0 +1,14 @@
+# pyproject.toml
+
+[tool.black]
+line-length = 88
+target-version = ['py312']  # adjust for your Python version
+include = '\.pyi?$'         # only format Python files
+exclude = '''
+(
+    /migrations/        # Django migrations
+  | /static/            # Static files
+  | /templates/         # Django templates
+  | /venv/              # Virtual environment
+)
+'''
