@@ -34,7 +34,11 @@ For the automated tests please see the tests_forms.py and tests_views.py. The fu
 
 All the HTML pages were passed the [W3C HTML Validation Tester](https://validator.w3.org/)
 
+After some research I found it better to enter the urls in to the validator rather than the code as it wasn't recognising some of the Django tags. 
 
+All pages passed when entered this way.
+
+![Error free html test](docs-images/html-validator.png)
 
 
 #### CSS Validator

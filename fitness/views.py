@@ -30,10 +30,8 @@ def profile_detail(request, username):
     plans = profile.plans.all().order_by('-start_date')
     comments = profile.comments_received.filter(approved=True, parent__isnull=True).order_by('-created_at')
     comment_form = CommentForm()
-
     # Check if this is the user's own profile
     is_owner = request.user == profile.user
-
     # Follow requests section
     pending_follow_requests = []
     if is_owner:
@@ -41,7 +39,6 @@ def profile_detail(request, username):
             to_user=profile,
             accepted=False
         ).select_related('from_user') 
-
     # Check if current user is following this profile (they sent a request that was accepted)
     is_following = False
     if request.user.is_authenticated and not is_owner:
@@ -50,7 +47,6 @@ def profile_detail(request, username):
             to_user=profile,
             accepted=True
         ).exists()
-    
     # Check if profile owner is following current user back (mutual connection)
     profile_follows_user = False
     if request.user.is_authenticated and not is_owner:
@@ -59,10 +55,8 @@ def profile_detail(request, username):
             to_user=request.user.userprofile,
             accepted=True
         ).exists()
-    
     # Can comment if: owner, following the profile, OR profile follows them back
     can_comment = is_owner or is_following or profile_follows_user
-
     context = {
         'profile': profile,
         'previous_plans': plans,
@@ -88,7 +82,6 @@ def edit_profile(request):
             return redirect('profile_detail', username=profile.user.username)
     else:
         form = UserProfileForm(instance=profile)
-
     return render(request, 'profiles/edit_profile.html', {'form': form})
 
 
@@ -97,32 +90,26 @@ def create_training_plan(request):
     """Allows the user to create a new training plan."""
     user_profile = get_object_or_404(UserProfile, user=request.user)
     last_plan = TrainingPlan.objects.filter(user=user_profile).order_by('-start_date').first()
-    
     if request.method == 'POST':
         form = PlanGenerationForm(request.POST)
         if form.is_valid():
             plan = form.save(commit=False)
             plan.user = request.user.userprofile
-            plan.plan_json = {}  # Initialize empty JSON - will be filled by Celery task
-            
+            plan.plan_json = {}  # Initialize empty JSON - will be filled by Celery task   
             # Link to previous plan if it exists
             if last_plan:
-                plan.previous_plan = last_plan
-            
-            plan.save()
-            
+                plan.previous_plan = last_plan 
+            plan.save() 
             # Trigger async celery task
             generate_training_plan_task.delay(plan.pk)
             messages.success(request, "Training plan request submitted! AI generation is in progress.")
             return redirect('plan_detail', pk=plan.pk)
     else:
         form = PlanGenerationForm()
-
     context = {
         'form': form,
         'last_plan': last_plan
     }
-
     return render(request, 'plans/create_plan.html', context)
 
 
@@ -173,9 +160,10 @@ def add_comment(request, profile_id, parent_id=None):
             comment.profile = profile
             comment.parent = parent
             comment.save()
-            messages.success(request, "Comment added!")
-        else:
-            messages.error(request, "Error adding comment. Please try again.")
+            if parent:
+                messages.success(request, "Your reply has been successfully posted!")
+            else:
+                messages.success(request, "Your comment has been successfully posted!")
     return redirect('profile_detail', username=profile.user.username)
 
 
@@ -254,16 +242,13 @@ def send_follow_request(request, profile_pk):
 def approve_follow_request(request, request_id):
     """Approves a follow request."""
     follow_request = get_object_or_404(FollowRequest, id=request_id)
-    
     # Security check: Ensure only the recipient can approve the request
     if follow_request.to_user.user != request.user:
         messages.error(request, "You do not have permission to approve this request.")
         return redirect('profile_detail', username=request.user.username)
-        
     follow_request.accepted = True
     follow_request.save()
     messages.success(request, f"Follow request from {follow_request.from_user.display_name} approved!")
-  
     return redirect('profile_detail', username=follow_request.to_user.user.username) 
 
 
@@ -277,7 +262,6 @@ def signup(request):
             profile.display_name = user.username
             profile.bio = "This user hasn't added a bio yet."
             profile.save()
-
             login(request, user)  # Log them in
             messages.success(request, "Signup successful!")
             return redirect('profile_detail', username=user.username)  # Redirect to their profile
@@ -295,6 +279,7 @@ def home(request):
         'example_plans': example_plans,
     }
     return render(request, 'home.html', context)
+
 
 # Search Views
 def search_profiles_by_username(request):
