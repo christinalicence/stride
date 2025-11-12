@@ -1,7 +1,6 @@
 # Testing for Stride
 
 ## 1. Testing Objectives Against User Stories
-### b. User Stories
 
 ## 2. Manual Testing
 ### a. Testing Using Code Validators
@@ -16,32 +15,16 @@
 
 ## 1. Testing Objectives Against User Stories
 
-#### First Story
+For full user stories please see README.md
 
-User A has a long term knee injury that means they avoid jumpling and high impact exercises. Every exercise plan they find online seems to suggest this as part of their routines and they are looking for a plan that will adapt to their speicific needs.
+| User Story | Objective/Test | Expected Result | Tests Used/Proof of Implementation |
+| :--- | :--- | :--- | :--- |
+| First Story (Long Term Injury) | AI can be aware of the injury and generate a plan | JSON output from AI should reference the injury | The forms for injury input have **automated tests**. The AI output was **tested manually** extensively. |
+| Second Story (Hold Conversations via comments) | Users can view and post a chain of comments | Reply structure should be visible on a connected profile | There are **automated tests** for comments and replies |
+| Third Story (See friends' plans) | Can follow people and see profiles with plans | Follow requests can be accepted and plans seen when authenticated | There are **automated tests** for follow requests |
+| Fourth Story (Influencer communicating to followers) | Can comment on their own profiles | Logic must allow commenting on own profiles | This is checked in the **automated test** and **manually**. |
 
- - They needs to be able to tell the AI that generates the plan about their specific exercise needs for a plan. 
- - It is useful for them if the site can remember their injury and build long term progression goals/plans.
-
-#### Second Story
-
-User B enjoys personally adapted plans but also wants to reach out to other people, connect and talk about the challenges they face exercising.
-
-- They need to be able to hold back to back conversations with people on comments
-
-#### Third Story
-
-User C is part of a friendship group that enjoy exercise. They want to be able to see and discuss their friends' plans.
-
-- They need to be able to find the profiles they follow easily and comment on profiles.
-
-#### Fourth Story
-
-User D is an influencer with a community of followers. They want to be able to show their followers the plans they are following.
-
-- They need to be able to exapnd on their profile to communicate to their followers.
-- They also need to be able to comment on their own profiles as well as other peoples to help engagement.
-
+For the automated tests please see the tests_forms.py and tests_views.py. The function of each test is explained.
 
 
 ## 2. Manual Testing
@@ -58,7 +41,7 @@ All the HTML pages were passed the [W3C HTML Validation Tester](https://validato
 
 The site passed the [W3C CSS Validation Test](https://jigsaw.w3.org/css-validator/) without errors
 
-![Error free CSS test](docs/docs-images/css-test.png)
+![Error free CSS test](docs-images/css-test.png)
 
 #### Python Standards
 
@@ -67,24 +50,24 @@ The site passed the [W3C CSS Validation Test](https://jigsaw.w3.org/css-validato
 The pages were tested using Google Lighthouse for performance, accessibility and Best Practice.
 
 Here is the report for the home page
-![Google Lighthouse Report](docs/docs-images/lighthouse-home.png)
+![Google Lighthouse Report](docs-images/lighthouse-home.png)
 
 
 Lighthouse did uncover an issue on my traning plans where ther buttons colours used didn't have sufficient contrast.
 
-![buttons in old colour](docs/docs-images/button-contrast.png)
+![buttons in old colour](docs-images/button-contrast.png)
 
 As accessibility is a core part of the ethos of this site I changed the buttons to a darker colour.
 
-![buttons in new colour](docs/docs-images/button-contrast-new.png)
+![buttons in new colour](docs-images/button-contrast-new.png)
 
 It also picked up on Cloudinary leaving 3rd party cookies as part of it's best practice report on profile pages where an image was being stored.
 
-![78% Best Practice Score on Lighthouse](docs/docs-images/cloudinary-error1.png)
+![78% Best Practice Score on Lighthouse](docs-images/cloudinary-error1.png)
 
 It also showed that it was leaving a marker for the cookies on the issues panel
 
-![Issues warning showing on Lighthouse](docs/docs-images/cloudinary-error2.png)
+![Issues warning showing on Lighthouse](docs-images/cloudinary-error2.png)
 
 As I feel that Cloudinary is a useful part of this site I hae decided not to change it, despite these warnings.
 
@@ -97,7 +80,7 @@ These were the only issues across the site found by Lighthouse.
 
 This has been tested manually and plans are generated.
 
-![short version of a plan](docs/docs-images/training-plan-example.png)
+![short version of a plan](docs-images/training-plan-example.png)
 
 It also has several automated tests for the forms associated with gathering information for the tests and the test regeneration functions for making new tests.
 
@@ -105,7 +88,7 @@ It also has several automated tests for the forms associated with gathering info
 
 This has been tested manually.
 
-![example of a page with followers and following profiles listed](docs/docs-images/follow-example.png)
+![example of a page with followers and following profiles listed](docs-images/follow-example.png)
 
 There are also automated tests to ensure that follow requests can be sent and approved.
 
@@ -113,7 +96,7 @@ There are also automated tests to ensure that follow requests can be sent and ap
 
 This has been tested manually
 
-![example of a comment with CRUD buttons showing](docs/docs-images/comment-example.png)
+![example of a comment with CRUD buttons showing](docs-images/comment-example.png)
 
 There are also automated tests to ensure comments can be added and deleted by the author.
 
@@ -121,22 +104,13 @@ There are also automated tests to ensure comments can be added and deleted by th
 
 These have been tested manually
 
-![search buttons for username and target event](docs/docs-images/search-buttons.png)
+![search buttons for username and target event](docs-images/search-buttons.png)
 
 There are also automated tests for the search functions, including if the search button is pressed when the boxes are blank (which brings up all profiles)
 
 ### d. Manual Testing of Responsiveness
 
-### e. User Testing/Feedback
-
-## 3. Automated Testing using Django
-
-There are lots of tests written and contained in the files test_forms.py, test_tasks.py and test_views.py. They have been designed to ensure that the site works against user stories, but also to make sure that the site is robust and can function when unexpected things happen.
-
-## 4. Test Driven Development
-
-I adopted test driven development part way through this project and started to understand the real benefits of this approach. It has made my code more robust and less prone to errors. It also makes me think about exactly what function I want it to perform before writing it.
-
+The site has been tested using Lighthouse, Android phones, iphones and an ipad. No issues were found for responsiveness, I kept this simple by using Bootstrap responsive setups. 
 
 ### e. User Testing/Feedback
 
@@ -168,10 +142,16 @@ I did another bit of user testing when I around 95% through development. Again t
 - They also found that warnings/messages were sometimes appearing twice on the 'My Profile' Page.
 
 
-## 3. Automated Testing.
+## 3. Automated Testing using Django
 
-I have set up automated tests in django for all views and forms to ensure as comprehensively as possible that these work.
+There are lots of tests written and contained in the files test_forms.py, test_tasks.py and test_views.py. They have been designed to ensure that the site works against user stories, but also to make sure that the site is robust and can function when unexpected things happen.
+
+All automated tests are passing when run.
+
+![the terminal showing passing tets](docs-images/automated-tests.png)
+
 
 ## 4. Test Driven Development
 
-I picked up the principle of test driven development part way through the project. For the 2nd half of the project all tests were adapted or new tests were written when there was any changes in the views or forms.
+I adopted test driven development part way through this project and started to understand the real benefits of this approach. It has made my code more robust and less prone to errors. It also makes me think about exactly what function I want it to perform before writing it.
+
