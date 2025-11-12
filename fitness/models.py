@@ -10,7 +10,20 @@ from django.templatetags.static import static
 
 
 class UserProfile(models.Model):
-
+    # All content inside the class must be indented exactly once (e.g., 4 spaces)
+    FITNESS_LEVEL_CHOICES = [
+        ('beginner', 'Beginner (New to exercise)'),
+        ('novice', 'Novice (Irregular exercise)'),
+        ('intermediate', 'Intermediate (Regular exercise)'),
+        ('advanced', 'Advanced (Highly trained/competitive)'),
+    ]
+    EXERCISE_DURATION_CHOICES = [
+        ('30', 'Up to 30 minutes'),
+        ('31-60', '31 - 60 minutes'),
+        ('61-90', '61 - 90 minutes'),
+        ('91-120', '91 - 120 minutes'),
+        ('120+', 'More than 120 minutes'),
+    ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=100, blank=True)
     profile_picture = CloudinaryField('image', blank=True, null=True)
@@ -25,62 +38,30 @@ class UserProfile(models.Model):
             "(e.g., dumbbells 5–12kg, resistance bands medium, exercise bike, etc.)"
         ),
     )
-
-    # Private physical info
-    weight_kg = models.FloatField(
-        blank=True,
-        null=True,
-        help_text="kg (private)"
-    )
-    height_cm = models.FloatField(
-        blank=True,
-        null=True,
-        help_text="cm (private)"
-    )
-    age = models.PositiveIntegerField(
-        blank=True,
-        null=True,
-        help_text="years (private)"
-    )
     fitness_level = models.CharField(
         max_length=20,
-        choices=[
-            ('beginner', 'Beginner'),
-            ('intermediate', 'Intermediate'),
-            ('advanced', 'Advanced'),
-        ],
-        blank=True,
-        help_text="(private)"
+        choices=FITNESS_LEVEL_CHOICES,
+        default='novice',
+        help_text="Current fitness level"
     )
-    gender = models.CharField(
-        max_length=20,
-        choices=[
-            ('male', 'Male'),
-            ('female', 'Female'),
-            ('other', 'Other'),
-            ('prefer_not_to_say', 'Prefer not to say'),
-        ],
-        blank=True,
-        null=True,
-        help_text="(private)"
-    )
-    
-    # injuries & accessibility 
     injuries_and_limitations = models.TextField(
         blank=True,
         null=True,
         help_text="Describe any long-term injuries, mobility limitations, or accessibility needs."
     )
-
-    # exercise habits
     exercise_days_per_week = models.PositiveIntegerField(default=3, validators=[MinValueValidator(1), MaxValueValidator(7)])
     exercise_duration = models.CharField(
-        max_length=50,
-        blank=True,
-        help_text="Typical workout length (e.g., '30 mins', '1 hour', 'varies')."
+        max_length=20,
+        choices=EXERCISE_DURATION_CHOICES,
+        default='31-60',
+        help_text="Average duration of your exercise sessions."
     )
-
-    # Personal goal
+    fitness_level = models.CharField(
+        max_length=20,
+        choices=FITNESS_LEVEL_CHOICES, 
+        default='novice',
+        help_text="Current fitness level (Used by AI for intensity setting)."
+    )
     goal_event = models.CharField(
         max_length=100,
         blank=True,

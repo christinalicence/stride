@@ -27,6 +27,9 @@
         {% else %}
             <p>No long-term injuries or limitations listed.</p>
         {% endif %}
+        <p>Fitness Level: <strong>{{ profile.get_fitness_level_display }}</strong></p>
+        <p>Avg. Duration: <strong>{{ profile.get_exercise_duration_display }}</strong></p>
+        <p>Days per Week: <strong>{{ profile.exercise_days_per_week }}</strong></p>
     {% else %}
         <p>Follow to see more details.</p>
     {% endif %}

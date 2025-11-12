@@ -81,12 +81,10 @@ def generate_training_plan_task(plan_id):
     profile_data = {
         "fitness_level": getattr(profile, "fitness_level", "unknown"),
         "exercise_days_per_week": getattr(profile, "exercise_days_per_week", 3),
+        'Fitness_Level': profile.get_fitness_level_display(),
+        'Exercise_Duration_Minutes': profile.get_exercise_duration_display(),
         "exercise_duration": getattr(profile, "exercise_duration", "30 min"),
         "equipment_text": getattr(profile, "equipment_text", "None"),
-        "weight_kg": getattr(profile, "weight_kg", 0),
-        "height_cm": getattr(profile, "height_cm", 0),
-        "age": getattr(profile, "age", 0),
-        "gender": getattr(profile, "gender", None),
         "long_term_injuries": getattr(profile, "injuries_and_limitations", ""),
         "minor_injuries": plan.minor_injuries or ""
     }

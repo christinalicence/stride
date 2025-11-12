@@ -9,7 +9,18 @@ class UserProfileForm(forms.ModelForm):
     """Form for editing user profiles."""
     class Meta:
         model = UserProfile
-        fields = ['display_name', 'bio', 'profile_picture', 'equipment_text', 'goal_event', 'goal_date', 'injuries_and_limitations', 'exercise_days_per_week', 'exercise_duration']
+        fields = [
+            'display_name',
+            'bio',
+            'profile_picture',
+            'equipment_text',
+            'goal_event',
+            'goal_date',
+            'injuries_and_limitations',
+            'exercise_days_per_week',
+            'exercise_duration',
+            'fitness_level',
+        ]
         widgets = {
             'bio':forms.Textarea(attrs={'rows': 4}),
             'equipment_text': forms.Textarea(attrs={'rows': 3}),
@@ -23,6 +34,8 @@ class UserProfileForm(forms.ModelForm):
             'long_term_injuries': 'Long-term Injuries or Limitationa',
             'goal_event': 'Fitness Goal or Event',
             'goal_date': 'Target Date for Goal/Event',
+            'fitness_level': 'Current Fitness Level',
+            'exercise_duration': 'Avg. Exercise Duration'
         }
     def clean_goal_date(self):
         goal_date = self.cleaned_data.get('goal_date')
