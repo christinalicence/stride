@@ -48,7 +48,7 @@ class TestTrainingPlanForm(TestCase):
             'minor_injuries': ''
         })
         assert form.is_valid()
-    
+       
     def test_optional_fields_are_blank(self):
         """Tests the form works with optional fields left blank"""
         form = TrainingPlanForm(data={
@@ -80,7 +80,7 @@ class TestPlanGenerationForm(TestCase):
             'plan_preferences': 'Include hills'
         })
         assert form.is_valid()
-    
+        
     def test_without_optional_fields(self):
         """Tests form works with only required fields"""
         form = PlanGenerationForm(data={

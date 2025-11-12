@@ -16,13 +16,6 @@
 
 ## 1. Testing Objectives Against User Stories
 
-## 1. User Experience
-### a. Purpose of the Website
-
-This is a web application designed to help people formulate ongoing exercise plans with the help of AI taking in to account any injuries or limitations, such as a long term knee injury. The application also strives to create a community where you can follow people and comment on their profiles and traning plans. The idea is that the site will be a positivie place that helps people stay fit, healthy, happy and connected, even if they have injures and/or long term limitations in their exercise. The site is designed to one day make it compatible with smart watches (eg Garmin or Apple) to be able to upload your exercise plan on to your watch to follow.
-
-### b. User Stories
-
 #### First Story
 
 User A has a long term knee injury that means they avoid jumpling and high impact exercises. Every exercise plan they find online seems to suggest this as part of their routines and they are looking for a plan that will adapt to their speicific needs.
@@ -99,7 +92,41 @@ These were the only issues across the site found by Lighthouse.
 
 
 ### c. Manual Testing of Features
+
+#### Training Plan Creation
+
+This has been tested manually and plans are generated.
+
+![short version of a plan](docs/docs-images/training-plan-example.png)
+
+It also has several automated tests for the forms associated with gathering information for the tests and the test regeneration functions for making new tests.
+
+#### Following Other people
+
+This has been tested manually.
+
+![example of a page with followers and following profiles listed](docs/docs-images/follow-example.png)
+
+There are also automated tests to ensure that follow requests can be sent and approved.
+
+#### Comments, including CRUD functions
+
+This has been tested manually
+
+![example of a comment with CRUD buttons showing](docs/docs-images/comment-example.png)
+
+There are also automated tests to ensure comments can be added and deleted by the author.
+
+#### Profile search for username and goals
+
+These have been tested manually
+
+![search buttons for username and target event](docs/docs-images/search-buttons.png)
+
+There are also automated tests for the search functions, including if the search button is pressed when the boxes are blank (which brings up all profiles)
+
 ### d. Manual Testing of Responsiveness
+
 ### e. User Testing/Feedback
 
 ## 3. Automated Testing using Django
@@ -112,6 +139,8 @@ I adopted test driven development part way through this project and started to u
 
 
 ### e. User Testing/Feedback
+
+#### First Feedback
 
 I recieved quite a lot of user feedback when it was tested about 60% through development.
 
@@ -126,9 +155,17 @@ I recieved quite a lot of user feedback when it was tested about 60% through dev
     - You can follow yourself.
     - Changes weren't being saved after editing your profile.
 
-I did another bit of user testing when I around 95% through development.
+These were all fixed.
 
-- 
+#### Second Feedback
+
+I did another bit of user testing when I around 95% through development. Again there were some suggestions for improvement.
+
+- I had removed the height, weight and current fitness levels from the profiles for simplicity, but they were quite critical of this because it meant the plans were not taking these important factors in to considereation. The line between simplicity and functionality in this project has often been difficult to navigate.
+
+- They also found that you could reply to comments on people's profiles that you weren't following if there was already a comment. I fixed this through improving the logic. You can only comment/reply when you are connected to someone (folled by/following).
+
+- They also found that warnings/messages were sometimes appearing twice on the 'My Profile' Page.
 
 
 ## 3. Automated Testing.

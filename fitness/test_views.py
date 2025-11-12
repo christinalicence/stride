@@ -3,8 +3,8 @@ from django.urls import reverse
 from django.test import TestCase
 from django.db.models.signals import post_save
 from fitness.signals import create_user_profile, save_user_profile
-from fitness.models import UserProfile, TrainingPlan
-from fitness.forms import UserProfileForm
+from fitness.models import UserProfile, TrainingPlan, Comment, FollowRequest
+from fitness.forms import UserProfileForm, TrainingPlanForm, PlanGenerationForm, CommentForm
 from datetime import date, timedelta
 
 
@@ -95,7 +95,6 @@ class FitnessViewsTest(TestCase):
             'exercise_duration': '1 hour',
         }
         response = self.client.post(url, new_data, follow=True)
-        
         # Check for success
         self.assertEqual(response.status_code, 200)
         self.profile1.refresh_from_db()
@@ -153,7 +152,6 @@ class FitnessViewsTest(TestCase):
 class DeletePlanAndRetryViewTest(TestCase):
     """Tests for the delete_plan_and_retry view, covering authorization, 
     deletion, and redirection logic."""
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -181,7 +179,6 @@ class DeletePlanAndRetryViewTest(TestCase):
             display_name='other_user',
             profile_picture='placeholder'
         )
-        
         # Create a TrainingPlan using the UserProfile instance
         self.plan = TrainingPlan.objects.create(
             user=self.profile, # <-- FIX: Use the created UserProfile (self.profile)
@@ -192,3 +189,106 @@ class DeletePlanAndRetryViewTest(TestCase):
         )
         self.url = reverse('delete_plan_and_retry', kwargs={'pk': self.plan.pk})
         self.redirect_url = reverse('create_training_plan')
+
+# Tests for comments and follows
+
+class FitnessSocialTests(TestCase):
+    """Sets up tests for comments and follows between profiles."""
+    @classmethod
+    def setUpTestData(cls):
+        # Disconnect signals to prevent automatic profile creation during tests
+        post_save.disconnect(create_user_profile, sender=User)
+        post_save.disconnect(save_user_profile, sender=User)
+        try:
+            # Create test users and profiles
+            cls.user_author = User.objects.create_user(username='comment_author', password='test_password')
+            cls.profile_author = UserProfile.objects.create(
+                user=cls.user_author, 
+                display_name='Author Profile',
+                bio='Author Bio'
+            )
+            cls.user_target = User.objects.create_user(username='comment_target', password='test_password')
+            cls.profile_target = UserProfile.objects.create(
+                user=cls.user_target,
+                display_name='Target Profile',
+                bio='Target Bio'
+            )
+            # Create a comment by the author on the target's profile
+            cls.comment = Comment.objects.create(
+                author=cls.profile_author,
+                profile=cls.profile_target,
+                content='Test comment.',
+                approved=False
+            )
+        finally:
+            # Reconnect the signals after setup is complete
+            post_save.connect(create_user_profile, sender=User)
+            post_save.connect(save_user_profile, sender=User)
+
+# Tests for comments
+    def test_add_comment_success(self):
+        """Tests successful POST request to add a new comment."""
+        self.client.login(username='comment_author', password='test_password')
+        url = reverse('add_comment', kwargs={'profile_id': self.profile_target.pk})
+        new_comment_content = "This is a new test comment."
+        response = self.client.post(url, {'content': new_comment_content}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('profile_detail', kwargs={'username': self.user_target.username}))
+        # Check if the comment was created in the database
+        self.assertTrue(Comment.objects.filter(content=new_comment_content, author=self.profile_author).exists())
+
+    def test_delete_comment_non_author_failure(self):
+        """Tests that a non-author user cannot delete another user's comment."""
+        # Create a third user/profile
+        user_intruder = User.objects.create_user(username='intruder', password='test_password_i')
+        self.client.login(username='intruder', password='test_password_i')
+        url = reverse('delete_comment', kwargs={'comment_id': self.comment.pk})
+        response = self.client.post(url, follow=True)
+        # Should redirect back to the profile detail page with an error
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('profile_detail', kwargs={'username': self.user_target.username}))
+        self.assertContains(response, "You do not have permission to delete this comment.")
+        # Ensure comment still exists
+        self.assertTrue(Comment.objects.filter(pk=self.comment.pk).exists())
+   
+    def test_approve_comment_owner_success(self):
+        """Tests that the profile owner can approve a comment."""
+        self.client.login(username='comment_target', password='test_password') # Login as target (owner)
+        self.assertFalse(self.comment.approved) 
+        url = reverse('approve_comment', kwargs={'comment_id': self.comment.pk})
+        response = self.client.post(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('profile_detail', kwargs={'username': self.user_target.username}))
+        self.comment.refresh_from_db()
+        self.assertTrue(self.comment.approved)
+
+# Tests for follows
+    def test_send_follow_request_success(self):
+        """Tests successful follow request from author to target."""
+        self.client.login(username='comment_author', password='test_password')
+        url = reverse('send_follow_request', kwargs={'profile_pk': self.profile_target.pk})
+        response = self.client.post(url, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('profile_detail', kwargs={'username': self.user_target.username}))
+        # Check if the FollowRequest exists
+        self.assertTrue(FollowRequest.objects.filter(
+            from_user=self.profile_author,
+            to_user=self.profile_target,
+            accepted=False
+        ).exists())
+
+    def test_approve_follow_request_success(self):
+        """Tests successful approval of a follow request by the recipient."""
+        follow_request = FollowRequest.objects.create(
+            from_user=self.profile_author,
+            to_user=self.profile_target,
+            accepted=False)
+        self.assertFalse(follow_request.accepted)
+        self.client.login(username='comment_target', password='test_password')
+        url = reverse('approve_follow_request', kwargs={'request_id': follow_request.pk})
+        response = self.client.post(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('profile_detail', kwargs={'username': self.user_target.username}))
+        follow_request.refresh_from_db()
+        self.assertTrue(follow_request.accepted)
