@@ -1,5 +1,5 @@
-{% extends 'base.html' %} {% load static %} {% load crispy_forms_tags %} {%block
-content %}
+{% extends 'base.html' %} {% load static %} {% load crispy_forms_tags %} {%
+block content %}
 <div class="container py-4">
   <div class="card mb-4 plan-card">
     <div class="card-body">
@@ -38,12 +38,14 @@ content %}
         <p>No summary available yet.</p>
         {% endif %}
       </div>
-      {# Start of the core conditional logic block #} {% if plan.plan_json and
+
+      {# Start of the core display logic #} {% if plan.plan_json and
       plan.plan_json.error %}
       <div class="alert alert-danger plan-heading-center mt-4" role="alert">
         Plan Generation Failed: {{ plan.plan_json.error }}
         <p class="mb-0 mt-2">Please try generating a new plan.</p>
       </div>
+
       {% elif plan.plan_json and plan.plan_json.plan_weeks %}
       <h3 class="medium-heading mb-4">Detailed Plan</h3>
       <div class="row">
@@ -88,6 +90,7 @@ content %}
         </div>
         {% endfor %}
       </div>
+
       {% else %}
       <div class="text-center mt-4">
         <div class="spinner-border plan-spinner-color" role="status">
