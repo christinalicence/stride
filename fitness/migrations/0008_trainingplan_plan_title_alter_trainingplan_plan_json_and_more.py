@@ -6,23 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fitness', '0007_remove_userprofile_injury_limitations_and_more'),
+        ("fitness", "0007_remove_userprofile_injury_limitations_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='trainingplan',
-            name='plan_title',
+            model_name="trainingplan",
+            name="plan_title",
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
         migrations.AlterField(
-            model_name='trainingplan',
-            name='plan_json',
-            field=models.JSONField(help_text='JSON containing weeks, workouts, and exercises.'),
+            model_name="trainingplan",
+            name="plan_json",
+            field=models.JSONField(
+                help_text="JSON containing weeks, workouts, and exercises."
+            ),
         ),
         migrations.AlterField(
-            model_name='trainingplan',
-            name='target_event',
+            model_name="trainingplan",
+            name="target_event",
             field=models.CharField(blank=True, max_length=100),
         ),
     ]

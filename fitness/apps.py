@@ -2,8 +2,5 @@ from django.apps import AppConfig
 
 
 class FitnessConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'fitness'
-
-    def ready(self):
-        import fitness.signals  # Ensure signals are imported and registered
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "fitness"

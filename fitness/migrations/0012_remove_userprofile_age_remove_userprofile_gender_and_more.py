@@ -6,34 +6,55 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fitness', '0011_alter_userprofile_profile_picture'),
+        ("fitness", "0011_alter_userprofile_profile_picture"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='userprofile',
-            name='age',
+            model_name="userprofile",
+            name="age",
         ),
         migrations.RemoveField(
-            model_name='userprofile',
-            name='gender',
+            model_name="userprofile",
+            name="gender",
         ),
         migrations.RemoveField(
-            model_name='userprofile',
-            name='height_cm',
+            model_name="userprofile",
+            name="height_cm",
         ),
         migrations.RemoveField(
-            model_name='userprofile',
-            name='weight_kg',
+            model_name="userprofile",
+            name="weight_kg",
         ),
         migrations.AlterField(
-            model_name='userprofile',
-            name='exercise_duration',
-            field=models.CharField(choices=[('30', 'Up to 30 minutes'), ('31-60', '31 - 60 minutes'), ('61-90', '61 - 90 minutes'), ('91-120', '91 - 120 minutes'), ('120+', 'More than 120 minutes')], default='31-60', help_text='Average duration of your exercise sessions.', max_length=20),
+            model_name="userprofile",
+            name="exercise_duration",
+            field=models.CharField(
+                choices=[
+                    ("30", "Up to 30 minutes"),
+                    ("31-60", "31 - 60 minutes"),
+                    ("61-90", "61 - 90 minutes"),
+                    ("91-120", "91 - 120 minutes"),
+                    ("120+", "More than 120 minutes"),
+                ],
+                default="31-60",
+                help_text="Average duration of your exercise sessions.",
+                max_length=20,
+            ),
         ),
         migrations.AlterField(
-            model_name='userprofile',
-            name='fitness_level',
-            field=models.CharField(choices=[('beginner', 'Beginner (New to exercise)'), ('novice', 'Novice (Irregular exercise)'), ('intermediate', 'Intermediate (Regular exercise)'), ('advanced', 'Advanced (Highly trained/competitive)')], default='novice', help_text='Current fitness level (Used by AI for intensity setting).', max_length=20),
+            model_name="userprofile",
+            name="fitness_level",
+            field=models.CharField(
+                choices=[
+                    ("beginner", "Beginner (New to exercise)"),
+                    ("novice", "Novice (Irregular exercise)"),
+                    ("intermediate", "Intermediate (Regular exercise)"),
+                    ("advanced", "Advanced (Highly trained/competitive)"),
+                ],
+                default="novice",
+                help_text="Current fitness level (Used by AI for intensity setting).",
+                max_length=20,
+            ),
         ),
     ]

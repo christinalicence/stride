@@ -6,18 +6,26 @@ from anthropic import Anthropic
 from django.conf import settings
 from .models import TrainingPlan
 
-# Initialize logger
 logger = logging.getLogger(__name__)
 
 # --- JSON SCHEMA DEFINITION ---
 PLAN_SCHEMA = {
     "type": "object",
     "properties": {
-        "plan_title": {"type": "string", "description": "A short, descriptive title for the plan."},
-        "plan_summary": {"type": "string", "description": "A brief summary of the two-week plan."},
+        "plan_title": {
+            "type": "string",
+            "description": "A short, descriptive title for the plan.",
+        },
+        "plan_summary": {
+            "type": "string",
+            "description": "A brief summary of the two-week plan.",
+        },
         "plan_weeks": {
             "type": "array",
-            "description": "An array containing details for Week 1 and Week 2.",
+            "description": (
+                "An array containing details "
+                "for Week 1 and Week 2."
+                ),
             "items": {
                 "type": "object",
                 "properties": {
@@ -27,44 +35,83 @@ PLAN_SCHEMA = {
                         "items": {
                             "type": "object",
                             "properties": {
-                                "day": {"type": "string", "description": "Day of the week (e.g., Monday)."},
+                                "day": {
+                                    "type": "string",
+                                    "description": (
+                                        "Day of the week "
+                                        "(e.g., Monday)."
+                                        ),
+                                },
                                 "workout": {
                                     "type": "array",
-                                    "description": "List of exercises for the day. For rest days, return a single object with exercise='Rest Day'.",
+                                    "description": (
+                                        "List of exercises for the day. "
+                                        "For rest days, return a single"
+                                        "object with exercise='Rest Day'."
+                                    ),
                                     "items": {
                                         "type": "object",
                                         "properties": {
                                             "exercise": {"type": "string"},
-                                            "type": {"type": "string", "enum": ["strength", "cardio", "flexibility", "rest"]},
-                                            "sets": {"type": ["integer", "null"]},
-                                            "reps": {"type": ["string", "null"], "description": "Use string for reps, time, or distance (e.g., '12', '30 sec', '5 km'). Null for rest days."},
-                                            "intensity": {"type": ["integer", "null"], "description": "RPE (Rate of Perceived Exertion) 1-10. Null for rest days."}
+                                            "type": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "strength",
+                                                    "cardio",
+                                                    "flexibility",
+                                                    "rest",
+                                                ],
+                                            },
+                                            "sets": {
+                                                "type": ["integer", "null"]
+                                                },
+                                            "reps": {
+                                                "type": ["string", "null"],
+                                                "description": (
+                                                    "Use string for reps, "
+                                                    "time or distance (e.g., "
+                                                    "'12', 30 sec', '5 km'). "
+                                                    "Null for rest days."
+                                                ),
+                                            },
+                                            "intensity": {
+                                                "type": ["integer", "null"],
+                                                "description": (
+                                                    "RPE (Rate of Perceived "
+                                                    "Exertion) "
+                                                    "1–10. Null for rest days."
+                                                    ),
+                                            },
                                         },
-                                        "required": ["exercise", "type"]
-                                    }
-                                }
+                                        "required": ["exercise", "type"],
+                                    },
+                                },
                             },
-                            "required": ["day", "workout"]
-                        }
-                    }
+                            "required": ["day", "workout"],
+                        },
+                    },
                 },
-                "required": ["week_number", "days"]
-            }
-        }
+                "required": ["week_number", "days"],
+            },
+        },
     },
-    "required": ["plan_title", "plan_summary", "plan_weeks"]
+    "required": ["plan_title", "plan_summary", "plan_weeks"],
 }
 
-# Training plan generation task
+
 @shared_task
 def generate_training_plan_task(plan_id):
     """Generate a 2-week training plan using Claude API."""
-    client = Anthropic(api_key=os.getenv('CLAUDE_API_KEY', settings.CLAUDE_API_KEY))
+    client = Anthropic(
+        api_key=os.getenv("CLAUDE_API_KEY", settings.CLAUDE_API_KEY)
+    )
+
     try:
         plan = TrainingPlan.objects.get(id=plan_id)
     except TrainingPlan.DoesNotExist:
-        logger.error(f"TrainingPlan {plan_id} not found")
+        logger.error("TrainingPlan %s not found", plan_id)
         return
+
     profile = plan.user
 
     # Prepare feedback context
@@ -80,30 +127,35 @@ def generate_training_plan_task(plan_id):
     # Prepare user profile data
     profile_data = {
         "fitness_level": getattr(profile, "fitness_level", "unknown"),
-        "exercise_days_per_week": getattr(profile, "exercise_days_per_week", 3),
-        'Fitness_Level': profile.get_fitness_level_display(),
-        'Exercise_Duration_Minutes': profile.get_exercise_duration_display(),
+        "exercise_days_per_week": getattr(
+            profile, "exercise_days_per_week", 3),
+        "Fitness_Level": profile.get_fitness_level_display(),
+        "Exercise_Duration_Minutes": profile.get_exercise_duration_display(),
         "exercise_duration": getattr(profile, "exercise_duration", "30 min"),
         "equipment_text": getattr(profile, "equipment_text", "None"),
-        "long_term_injuries": getattr(profile, "injuries_and_limitations", ""),
-        "minor_injuries": plan.minor_injuries or ""
+        "long_term_injuries": getattr(
+            profile, "injuries_and_limitations", ""
+        ),
+        "minor_injuries": plan.minor_injuries or "",
     }
 
-    # Safe handling for user preferences
     user_preferences = "None"
     if plan.plan_json and isinstance(plan.plan_json, dict):
         user_preferences = plan.plan_json.get("user_preferences", "None")
 
-
-    # Construct the prompt for the AI model
-    prompt = f"""You are an expert fitness coach. Your task is to generate a comprehensive 2-week training plan.
+    # Build prompt
+    prompt = f"""
+You are an expert fitness coach. Your task is to generate a comprehensive
+2-week training plan.
 
 Previous plan summary and feedback: {feedback_context}
 User profile data: {json.dumps(profile_data, separators=(',', ':'))}
 User preferences/goals: {user_preferences}
 
 PLAN RULES:
-1. Duration: Exactly 2 weeks, with training days matching `exercise_days_per_week` ({profile.exercise_days_per_week}).
+1. Duration: Exactly 2 weeks, with training days
+   matching `exercise_days_per_week`
+   ({profile.exercise_days_per_week}).
 2. Rest Days: For rest days, return EXACTLY ONE exercise object with:
    - "exercise": "Rest Day"
    - "type": "rest"
@@ -113,48 +165,69 @@ PLAN RULES:
    - exercise name
    - type (strength/cardio/flexibility)
    - sets (integer)
-   - reps (string - can be reps, time, or distance like "12", "30 sec", "5 km")
+   - reps (string - e.g. '12', '30 sec', '5 km')
    - intensity (RPE 1-10)
-4. Safety: Strictly respect all injuries and available equipment ({profile.equipment_text or 'None'}).
-5. Time: The total time for each workout must fit within the user's specified duration ({profile.exercise_duration}).
+4. Safety: Respect all injuries and available equipment
+   ({profile.equipment_text or 'None'}).
+5. Time: Each workout must fit within the user's specified duration
+   ({profile.exercise_duration}).
 
-CRITICAL: Rest days must use the exact format specified in rule 2. Never return an array with the string "Rest Day".
+CRITICAL: Rest days must use the exact format specified in rule 2.
+Never return an array with the string "Rest Day".
 
-Use the `get_plan_json` tool to return the complete plan. Do not include any text, conversation, or markdown (like ```json) outside of the tool's input.
+Use the `get_plan_json` tool to return the complete plan.
+Do not include any text, conversation, or markdown outside of the tool's input.
 """
 
     try:
         response = client.messages.create(
             model="claude-haiku-4-5-20251001",
             max_tokens=4096,
-            system="You are an expert trainer returning a single valid JSON object. For rest days, always use the object format: {'exercise': 'Rest Day', 'type': 'rest'}",
+            system=(
+                "You are an expert trainer returning a single "
+                "valid JSON object. "
+                "For rest days, always use the object format: "
+                "{'exercise': 'Rest Day', 'type': 'rest'}"
+            ),
             messages=[{"role": "user", "content": prompt}],
             tool_choice={"type": "tool", "name": "get_plan_json"},
-            tools=[{"name": "get_plan_json", "description": "Generates 2-week plan based on user profile and rules.", "input_schema": PLAN_SCHEMA}]
+            tools=[
+                {
+                    "name": "get_plan_json",
+                    "description": (
+                        "Generates 2-week plan based "
+                        "on user profile and rules."
+                    ),
+                    "input_schema": PLAN_SCHEMA,
+                }
+            ],
         )
 
-        if response.content and response.content[0].type == 'tool_use':
+        if response.content and response.content[0].type == "tool_use":
             tool_use = response.content[0]
-            if tool_use.name == 'get_plan_json':
+            if tool_use.name == "get_plan_json":
                 ai_data = tool_use.input
                 plan.plan_json = ai_data
-                plan.plan_summary = ai_data.get("plan_summary", "Plan generated.")
-                plan.plan_title = ai_data.get("plan_title", plan.plan_title or "New Training Plan")
+                plan.plan_summary = ai_data.get(
+                    "plan_summary",
+                    "Plan generated.")
+                plan.plan_title = ai_data.get(
+                    "plan_title", plan.plan_title or "New Training Plan"
+                )
                 plan.save()
-                logger.info(f"Training plan {plan_id} generated successfully")
+                logger.info("Training plan %s generated successfully", plan_id)
             else:
                 raise ValueError(f"Unexpected tool used: {tool_use.name}")
         else:
-             raise ValueError("AI response did not contain a tool use block.")
+            raise ValueError("AI response did not contain a tool use block.")
 
-    except Exception as e:
-        logger.exception(f"Error generating plan {plan_id}: {str(e)}")
-        plan.plan_json = {"error": f"Generation failed: {str(e)}"}
-        plan.plan_summary = f"Generation failed: {str(e)}"
+    except Exception as exc:
+        logger.exception("Error generating plan %s: %s", plan_id, str(exc))
+        plan.plan_json = {"error": f"Generation failed: {exc}"}
+        plan.plan_summary = f"Generation failed: {exc}"
         plan.save()
 
 
-# Celery tester 
 @shared_task
 def test_celery():
     """Simple Celery test to check task execution."""

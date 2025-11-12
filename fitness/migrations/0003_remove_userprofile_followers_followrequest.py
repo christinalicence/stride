@@ -7,25 +7,47 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fitness', '0002_comment_approved'),
+        ("fitness", "0002_comment_approved"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='userprofile',
-            name='followers',
+            model_name="userprofile",
+            name="followers",
         ),
         migrations.CreateModel(
-            name='FollowRequest',
+            name="FollowRequest",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('accepted', models.BooleanField(default=False)),
-                ('from_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sent_follow_requests', to='fitness.userprofile')),
-                ('to_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='received_follow_requests', to='fitness.userprofile')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("accepted", models.BooleanField(default=False)),
+                (
+                    "from_user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="sent_follow_requests",
+                        to="fitness.userprofile",
+                    ),
+                ),
+                (
+                    "to_user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="received_follow_requests",
+                        to="fitness.userprofile",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('from_user', 'to_user')},
+                "unique_together": {("from_user", "to_user")},
             },
         ),
     ]

@@ -139,11 +139,13 @@ These were all fixed.
 
 I did another bit of user testing when I around 95% through development. Again there were some suggestions for improvement.
 
-- I had removed the height, weight and current fitness levels from the profiles for simplicity, but they were quite critical of this because it meant the plans were not taking these important factors in to considereation. The line between simplicity and functionality in this project has often been difficult to navigate.
+- The entry for the 'exercise duration' was free text, which meant that illogical amounts could be entered. I fixed this by turning it in to a dropdown.
+
+- I had removed the height, weight and current fitness levels from the profiles for simplicity, but they were quite critical of this because it meant the plans were not taking these important factors in to consideration. The line between simplicity and functionality in this project has often been difficult to navigate. After some thought my fix for this was to put in a 'current fitness level' dropdown to give the AI a bit more info while still keeping it simple.
 
 - They also found that you could reply to comments on people's profiles that you weren't following if there was already a comment. I fixed this through improving the logic. You can only comment/reply when you are connected to someone (folled by/following).
 
-- They also found that warnings/messages were sometimes appearing twice on the 'My Profile' Page.
+- They also found that warnings/messages were sometimes appearing twice on the 'My Profile' Page. I fixed this by changing the logic in the view, where messages were accidentally called twice.
 
 
 ## 3. Automated Testing using Django

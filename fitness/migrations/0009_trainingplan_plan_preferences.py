@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fitness', '0008_trainingplan_plan_title_alter_trainingplan_plan_json_and_more'),
+        (
+            "fitness",
+            "0008_trainingplan_plan_title_alter_trainingplan_plan_json_and_more",
+        ),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='trainingplan',
-            name='plan_preferences',
+            model_name="trainingplan",
+            name="plan_preferences",
             field=models.TextField(blank=True, null=True),
         ),
     ]

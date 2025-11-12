@@ -6,40 +6,55 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fitness', '0006_comment_parent'),
+        ("fitness", "0006_comment_parent"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='userprofile',
-            name='injury_limitations',
+            model_name="userprofile",
+            name="injury_limitations",
         ),
         migrations.RemoveField(
-            model_name='userprofile',
-            name='long_term_injuries',
+            model_name="userprofile",
+            name="long_term_injuries",
         ),
         migrations.RemoveField(
-            model_name='userprofile',
-            name='minor_injuries',
+            model_name="userprofile",
+            name="minor_injuries",
         ),
         migrations.AddField(
-            model_name='userprofile',
-            name='goal_date',
-            field=models.DateField(blank=True, help_text='Target date for achieving your goal', null=True),
+            model_name="userprofile",
+            name="goal_date",
+            field=models.DateField(
+                blank=True, help_text="Target date for achieving your goal", null=True
+            ),
         ),
         migrations.AddField(
-            model_name='userprofile',
-            name='goal_event',
-            field=models.CharField(blank=True, help_text="E.g., '5K run', 'Build muscle', 'Improve flexibility'", max_length=100, null=True),
+            model_name="userprofile",
+            name="goal_event",
+            field=models.CharField(
+                blank=True,
+                help_text="E.g., '5K run', 'Build muscle', 'Improve flexibility'",
+                max_length=100,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='userprofile',
-            name='injuries_and_limitations',
-            field=models.TextField(blank=True, help_text='Describe any long-term injuries, mobility limitations, or accessibility needs.', null=True),
+            model_name="userprofile",
+            name="injuries_and_limitations",
+            field=models.TextField(
+                blank=True,
+                help_text="Describe any long-term injuries, mobility limitations, or accessibility needs.",
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='userprofile',
-            name='exercise_duration',
-            field=models.CharField(blank=True, help_text="Typical workout length (e.g., '30 mins', '1 hour', 'varies').", max_length=50),
+            model_name="userprofile",
+            name="exercise_duration",
+            field=models.CharField(
+                blank=True,
+                help_text="Typical workout length (e.g., '30 mins', '1 hour', 'varies').",
+                max_length=50,
+            ),
         ),
     ]
