@@ -51,49 +51,43 @@ This is a web application designed to help people create personalised exercise p
 
 #### First Story
 
-User A has a long term knee injury that means they avoid jumping and high impact exercises. Every exercise plan they find online seems to suggest this as part of their routines and they are looking for a plan that will adapt to their specific needs.
+User A has a long term knee injury that means they avoid jumping and high impact exercises. Every exercise plan they find online seems to suggest this as part of their routines and they are looking for a plan that will adapt to their specific needs. This user needs to be able to tell the AI that generates the plan about their specific exercise needs for a plan.
 
- - They needs to be able to tell the AI that generates the plan about their specific exercise needs for a plan.
- - It is useful for them if the site can remember their injury and build long term progression goals/plans.
-
- *Acceptance Criteria*  - Users need to be able to save information to their profiles
-                        - The Plans need to draw on this information when they are created
+ **Acceptance Criteria**  
+ - Users need to be able to save information to their profiles
+ - The Plans need to draw on this information when they are created
 
 #### Second Story
 
-User B enjoys personally adapted plans but also wants to reach out to other people, connect and talk about the challenges they face exercising.
+User B enjoys personally adapted plans but also wants to reach out to other people, connect and talk about the challenges they face exercising. This user needs to be able to hold back to back conversations with people on comments
 
-- They need to be able to hold back to back conversations with people on comments
-
-*Acceptance Criteria*   - Users need to be able to leave comments and replies on profiles once connected (following/followed by)
-                        - They need to be able to view other users plans.
+ **Acceptance Criteria**     
+ - Users need to be able to leave comments and replies on profiles once connected (following/followed by)
+ - They need to be able to view other users plans.
 
 #### Third Story
 
-User C is part of a friendship group that enjoy exercise. They want to be able to see and discuss their friends' plans.
+User C is part of a friendship group that enjoy exercise. They want to be able to see and discuss their friends' plans. This user needs to be able to find the profiles they follow easily and comment on profiles.
 
-- They need to be able to find the profiles they follow easily and comment on profiles.
-
-*Acceptance Criteria*   - Users need to be able to follow each other
-                        - Users need to be able to search for other peoples usernames
+ **Acceptance Criteria**       
+ - Users need to be able to follow each other
+ - Users need to be able to search for other peoples usernames
 
 #### Fourth Story
 
-User D is an influencer with a community of followers. They want to be able to show their followers the plans they are following.
+User D is an influencer with a community of followers. They want to be able to show their followers the plans they are following. This user wants to be able to put more detai on their profile and comment on their own profile.
 
-- They need to be able to expand on their profile to communicate to their followers.
-- They also need to be able to comment on their own profiles as well as other peoples to help engagement.
-
-*Acceptance Criteria*   - Users need to be able to comment on their own profile
-                        - Users need to be able to comment on their own profiles
+ **Acceptance Criteria**     
+ - Users need to be able to comment on their own profile
+ - Users need to be able to write more detail on their profiles and personalise them with photos.
 
 #### Fifth Story
 
-User E is training for a local marathon (eg London Marathon) and wants to see what training other people are doing.
+User E is training for a local marathon (eg London Marathon) and wants to see what training other people are doing. They need to be able to search the site by events or key words in events.
 
-- They need to be able to search the site by events or key words in events.
-
-*Acceptance Criteria*   - Users should be able to search for a key word (eg London) in the goal events.
+ **Acceptance Criteria**    
+ 
+ - Users should be able to search for a key word (eg London) in the goal events.
 
 
 ### c. Wireframes
@@ -221,9 +215,9 @@ Before deploying ensure
 Once this is done. 
 
 Run the commands to update the github repo 
-> `git add`
-> `git commit -m "change you have made"`
-> `git push`
+- `git add`
+- `git commit -m "change you have made"`
+- `git push`
 
 Then when logged in on Heroku go to the deployment section to 'Deploy Branch,' then to 'Open App.' This should open an up to date version of Stride. 
 
