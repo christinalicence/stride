@@ -9,15 +9,6 @@
     {% else %}
         <h1>No profiles found</h1>
     {% endif %}
-    
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-info" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
     {% if profiles %}
         <p class="text-muted">Showing {{ profiles.count }} people found.</p>
         <div class="row">

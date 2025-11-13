@@ -16,8 +16,6 @@ from decouple import config
 import dj_database_url
 import sys
 from dotenv import load_dotenv
-from django.urls import reverse_lazy
-import logging
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
@@ -118,8 +116,6 @@ else:
 # Cloudinary configuration
 # If running locally, load .env
 if os.path.exists(Path(__file__).resolve().parent.parent / ".env"):
-    from dotenv import load_dotenv
-
     load_dotenv()
 
 CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME")

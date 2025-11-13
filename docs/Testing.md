@@ -22,14 +22,16 @@
 
 For full user stories please see README.md
 
-| User Story                                           | Objective/Test                                    | Expected Result                                                   | Tests Used/Proof of Implementation                                                                      |
-| :--------------------------------------------------- | :------------------------------------------------ | :---------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------ |
-| First Story (Long Term Injury)                       | AI can be aware of the injury and generate a plan | JSON output from AI should reference the injury                   | The forms for injury input have **automated tests**. The AI output was **tested manually** extensively. |
-| Second Story (Hold Conversations via comments)       | Users can view and post a chain of comments       | Reply structure should be visible on a connected profile          | There are **automated tests** for comments and replies                                                  |
-| Third Story (See friends' plans)                     | Can follow people and see profiles with plans     | Follow requests can be accepted and plans seen when authenticated | There are **automated tests** for follow requests                                                       |
-| Fourth Story (Influencer communicating to followers) | Can comment on their own profiles                 | Logic must allow commenting on own profiles                       | This is checked in the **automated test** and **manually**.                                             |
+| **User Story** | **Acceptance Criteria** | **Automated Tests** | **Manual Tests / Proof** |
+|-----------------|--------------------------|----------------------|---------------------------|
+| **First Story (Long Term Injury / Personalized Plan)** | Users need to be able to save information to their profiles. The Plans need to draw on this information when they are created. | `test_forms.py`: `TestUserProfileForm` tests injury input. | AI output was tested manually extensively to ensure injury constraints are respected. |
+| **Second Story (Hold Conversations via Comments)** | Users need to be able to leave comments and replies on profiles once connected. Users need to be able to view other users’ plans. | `test_forms.py`: `TestCommentForm` tests comment and replies. | This has also been tested manually. |
+| **Third Story (See Friends’ Plans & Connect)** | Users need to be able to follow each other. Users need to be able to search for other peoples’ usernames. | `test_views.py`: `test_send_follow_request_success` and `test_approve_follow_request_success`. The usernames is achieved with `test_views.py`: `def test_search_profiles_by_username(self)`. | Manual testing has been undertaken. |
+| **Fourth Story (Influencer Communicating / Self-Comment)** | Users need to be able to comment on their own profile. | `test_forms.py`: `TestCommentForm`. | This has been tested manually. |
+| **Fifth Story (Marathon Training / Event Search)** | Users should be able to search for a keyword (e.g., “London”) in the goal events. | `test_views.py`: `def test_search_profiles_by_goal_event(self)`. | This has been tested manually. |
 
-For the automated tests please see the tests_forms.py and tests_views.py. The function of each test is explained.
+Manual testing has been done across these tests (see manual features testing section), but the only part of the user stories which hasn't been tested with an automated test is the AI output for the plan as I couldn't find a comprehensive test. I did put error warnings in for if the AI failed.
+
 
 ## 2. Manual Testing
 
@@ -53,7 +55,7 @@ The site passed the [W3C CSS Validation Test](https://jigsaw.w3.org/css-validato
 
 #### Python Standards
 
-I made sure that all my code was to [PEP8](https://peps.python.org/pep-0008/) standards by downloading Flake8 and Black. I had several 'long line' errors to fix, but worked through them! I restricted my line limit to 88 characters, with shorter docstring limits of 72. The limit is set in my settings.json to work with Black. After taking a look at the PEP8 guidelines I felt this was appropriate given their section on line length and some people preffering longer lines. I checked the docstrings manually.
+I made sure that all my code was to [PEP8](https://peps.python.org/pep-0008/) standards by downloading Flake8 and Black. I had several 'long line' errors to fix, but worked through them! I restricted my line limit to 88 characters, with shorter docstring limits of 72. The limit is set in my settings.json to work with Black. After taking a look at the PEP8 guidelines I felt this was appropriate given their section on line length and some people prefering longer lines. I checked the docstrings manually.
 
 I initially set Black to save on format, but found this caused issues with my HTML pages, which it also formatted. My solution to this was to create a settings.json file and disable the setting to reformat on save. In order to reformat any file in the project you now run Black file-path/yourfile in the terminal.
 
@@ -64,7 +66,7 @@ The pages were tested using Google Lighthouse for performance, accessibility and
 Here is the report for the home page
 ![Google Lighthouse Report](docs-images/lighthouse-home.png)
 
-Lighthouse did uncover an issue on my traning plans where ther buttons colours used didn't have sufficient contrast.
+Lighthouse did uncover an issue on my traning plans where the button colours used didn't have sufficient contrast.
 
 ![buttons in old colour](docs-images/button-contrast.png)
 
@@ -80,7 +82,7 @@ It also showed that it was leaving a marker for the cookies on the issues panel
 
 ![Issues warning showing on Lighthouse](docs-images/cloudinary-error2.png)
 
-As I feel that Cloudinary is a useful part of this site I hae decided not to change it, despite these warnings.
+As I feel that Cloudinary is a useful part of this site I have decided not to change it, despite these warnings.
 
 These were the only issues across the site found by Lighthouse.
 
@@ -104,7 +106,7 @@ There are also automated tests to ensure that follow requests can be sent and ap
 
 #### Comments, including CRUD functions
 
-This has been tested manually
+This has been tested manually. You can only comment or reply on profiles that you are connected to (following or followed by)
 
 ![example of a comment with CRUD buttons showing](docs-images/comment-example.png)
 
@@ -114,7 +116,7 @@ There are also automated tests to ensure comments can be added and deleted by th
 
 These have been tested manually
 
-![search buttons for username and target event](docs-images/search-buttons.png)
+![search buttons for username and target event](docs-images/search-results.png)
 
 There are also automated tests for the search functions, including if the search button is pressed when the boxes are blank (which brings up all profiles)
 
@@ -126,7 +128,7 @@ The site has been tested using Lighthouse, Android phones, iphones and an ipad. 
 
 #### First Feedback
 
-I recieved quite a lot of user feedback when it was tested about 60% through development.
+I received quite a lot of user feedback when it was tested about 60% through development.
 
 - The profile/edit/profile and generate plan process was too complex. I needed to simplify it in order to make it more user friendly and be able to find the key fields more easily, especially long term injuries/limitations.
 
@@ -141,6 +143,8 @@ I recieved quite a lot of user feedback when it was tested about 60% through dev
 
 These were all fixed.
 
+I decided to elminate some fields to make the input simpler - weight, height, age and gender. The site was too complicated, making the user flow difficult.
+
 #### Second Feedback
 
 I did another bit of user testing when I around 95% through development. Again there were some suggestions for improvement.
@@ -149,7 +153,7 @@ I did another bit of user testing when I around 95% through development. Again t
 
 - I had removed the height, weight and current fitness levels from the profiles for simplicity, but they were quite critical of this because it meant the plans were not taking these important factors in to consideration. The line between simplicity and functionality in this project has often been difficult to navigate. After some thought my fix for this was to put in a 'current fitness level' dropdown to give the AI a bit more info while still keeping it simple.
 
-- They also found that you could reply to comments on people's profiles that you weren't following if there was already a comment. I fixed this through improving the logic. You can only comment/reply when you are connected to someone (folled by/following).
+- They also found that you could reply to comments on people's profiles that you weren't following if there was already a comment. I fixed this through improving the logic. You can only comment/reply when you are connected to someone (followed by/following).
 
 - They also found that warnings/messages were sometimes appearing twice on the 'My Profile' Page. I fixed this by changing the logic in the view, where messages were accidentally called twice.
 
@@ -159,7 +163,9 @@ There are lots of tests written and contained in the files test_forms.py, test_t
 
 All automated tests are passing when run.
 
-![the terminal showing passing tets](docs-images/automated-tests.png)
+![the terminal showing passing tests](docs-images/automated-tests.png)
+
+The test cover almost all the code, apart from the AI output, which I haven't found a robust test for. This needs to be done manually.
 
 ## 4. Test Driven Development
 

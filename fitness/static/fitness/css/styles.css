@@ -29,6 +29,7 @@ body {
 .normal-button {
     background-color: var(--primary-color);
     color: var(--light-text-color);
+    font-weight: bold;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
@@ -40,6 +41,7 @@ body {
     background-color: transparent;
     color: var(--primary-color);
     border: 2px solid var(--primary-color);
+    font-weight: bold;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
     cursor: pointer;

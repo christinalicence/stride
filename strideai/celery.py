@@ -1,6 +1,5 @@
 import os
 from celery import Celery
-from django.conf import settings
 
 # Set the default Django settings module for the 'celery' program.
 # Replace 'stride.settings' with 'your_project_name.settings'
