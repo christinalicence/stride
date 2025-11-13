@@ -173,7 +173,7 @@ I tried to keep that data as simple as possible. This project could be quite com
 
 I have drawn an ERD diagram to explore the relationships between the different sets of data. I have tried to keep it simple, the different fields are broken down in more detail in the schemas.
 
-![ERD Diagram](docs-images/ERD-stride.png)
+![ERD Diagram](docs-images/erd-stride.png)
 
 
 ## 3. Technologies Used
