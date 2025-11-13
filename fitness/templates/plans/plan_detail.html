@@ -23,19 +23,16 @@
             type="submit"
             class="btn normal-button"
             onclick="return confirm('Are you sure you want to make a new plan?');"
-          >
-            New Plan
-          </button>
+          >New Plan</button>
         </form>
         {% endif %}
       </div>
-
       <div class="mb-3">
-        <p>Goal Type: <strong>{{ plan.goal_type|default:"Combined" }}</strong></p>
-        <p>Start Date: <strong>{{ plan.start_date|date:"F j, Y" }}</strong></p>
+        <h3 class="medium-heading">Goal Type: {{ plan.goal_type|default:"Combined" }}</h3>
+        <p>Start Date: {{ plan.start_date|date:"F j, Y" }}</p>
 
         {% if plan.target_date %}
-        <p>Target Date: <strong>{{ plan.target_date|date:"F j, Y" }}</strong></p>
+        <p>Target Date:{{ plan.target_date|date:"F j, Y" }}</p>
         {% endif %}
 
         {% if plan.plan_summary %}
@@ -58,7 +55,7 @@
         <div class="col-md-6 mb-4">
           <div class="card week-card">
             <div class="card-header">
-              <h4 class="mb-0">Week {{ week.week_number }}</h4>
+              <h4 class="small-heading mb-0">Week {{ week.week_number }}</h4>
             </div>
             <ul class="list-group list-group-flush">
               {% for day_data in week.days %}
@@ -68,7 +65,7 @@
 
                   {% if day_data.workout|length > 0 %}
                     {% if day_data.workout.0.exercise == 'Rest Day' %}
-                      <span class="badge rest-day-badge">Rest Day</span>
+                      <span class="badge workout-badge-primary">Rest Day</span>
                     {% else %}
                       <ul class="list-unstyled day-workout-list">
                         {% for exercise in day_data.workout %}

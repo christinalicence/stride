@@ -53,9 +53,9 @@ The site passed the [W3C CSS Validation Test](https://jigsaw.w3.org/css-validato
 
 #### Python Standards
 
-I made sure that all my code was to PEP8 standards by downloading Flake8 and Black. I had several 'long line' errors to fix, but worked through them!
+I made sure that all my code was to [PEP8](https://peps.python.org/pep-0008/) standards by downloading Flake8 and Black. I had several 'long line' errors to fix, but worked through them! I restricted my line limit to 88 characters, with shorter docstring limits of 72. The limit is set in my settings.json to work with Black. After taking a look at the PEP8 guidelines I felt this was appropriate given their section on line length and some people preffering longer lines. I checked the docstrings manually.
 
-Black did cause me some issues as it reformatted my html causing problems, so I added a settings.json to disable it in html.
+I initially set Black to save on format, but found this caused issues with my HTML pages, which it also formatted. My solution to this was to create a settings.json file and disable the setting to reformat on save. In order to reformat any file in the project you now run Black file-path/yourfile in the terminal.
 
 ### b. Accessibility and Performance Testing
 

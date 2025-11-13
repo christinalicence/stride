@@ -46,6 +46,36 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.normal-link {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+    transition: color 0.2s ease-in-out;
+    width: fit-content;
+}
+
+.normal-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease-in-out;
+}
+
+.normal-link:hover {
+    color: var(--link-hover-color);
+}
+
+.normal-link:hover::after {
+    width: 100%;
+}
+
+
 /*Navbar Styles*/
 .header {
     background-color: var(--secondary-color);
@@ -158,6 +188,11 @@ body {
     color: var(--secondary-color);
 }
 
+.small-heading{
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+}
+
 /* Profile Card Styles */
 .profile-card-short{
     text-align: left;
@@ -233,11 +268,6 @@ body {
 
 .workout-badge-primary {
     background-color: var(--primary-color);
-}
-
-.rest-day-badge {
-    background-color: #28a745;
-    color: var(--light-text-color);
 }
 
 .plan-spinner-color {

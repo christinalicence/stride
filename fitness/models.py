@@ -211,7 +211,8 @@ class FollowRequest(models.Model):
 
     def __str__(self):
         status = "Accepted" if self.accepted else "Pending"
-        return f"Follow request from {self.from_user} " f"to {self.to_user} - {status}"
+        return f"Follow request from {self.from_user} "
+        f"to {self.to_user} - {status}"
 
     class Meta:
         unique_together = (

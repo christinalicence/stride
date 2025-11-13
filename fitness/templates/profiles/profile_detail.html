@@ -84,9 +84,10 @@
 <div class="card shadow-sm p-4 mb-4">
     <h3>Training Plans</h3>
     {% if user.is_authenticated and user == profile.user %}
-        <a href="{% url 'previous_plans' %}">View All Plans ({{ previous_plans|length }})</a>
+        <a class="normal-link" href="{% url 'previous_plans' %}">View All Plans ({{ previous_plans|length }})</a>
     {% endif %}
     {% if previous_plans %}
+    <br>
         <div class="row"> 
             {% for plan in previous_plans|slice:":3" %}
             <div class="col-12 col-md-6 col-lg-4 mb-3"> <div class="card border-primary h-100">

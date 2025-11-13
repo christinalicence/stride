@@ -302,7 +302,6 @@ def home(request):
 # Search Views
 def search_profiles_by_username(request):
     """Searches profiles by username."""
-    # handle empty or whitespace-only queries
     query = request.GET.get("q", "").strip()
     profiles = UserProfile.objects.none()
     if query:
@@ -317,7 +316,6 @@ def search_profiles_by_username(request):
         profiles = UserProfile.objects.filter(user__is_active=True).order_by(
             "user__username"
         )
-        messages.info(request, f"Showing all {profiles.count()} profiles.")
     if not query:
         query = ""
     return render(
@@ -342,7 +340,6 @@ def search_profiles_by_goal_event(request):
         profiles = UserProfile.objects.filter(user__is_active=True).order_by(
             "user__username"
         )
-        messages.info(request, f"Showing all {profiles.count()} profiles.")
     if not query:
         query = ""
     return render(

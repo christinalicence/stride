@@ -22,8 +22,7 @@ PLAN_SCHEMA = {
         },
         "plan_weeks": {
             "type": "array",
-            "description": ("An array containing details "
-                            "for Week 1 and Week 2."),
+            "description": ("An array containing details " "for Week 1 and Week 2."),
             "items": {
                 "type": "object",
                 "properties": {
@@ -59,11 +58,7 @@ PLAN_SCHEMA = {
                                                     "rest",
                                                 ],
                                             },
-                                            "sets": {"type": [
-                                                "integer",
-                                                "null"
-                                                ]
-                                                },
+                                            "sets": {"type": ["integer", "null"]},
                                             "reps": {
                                                 "type": ["string", "null"],
                                                 "description": (
@@ -101,9 +96,7 @@ PLAN_SCHEMA = {
 @shared_task
 def generate_training_plan_task(plan_id):
     """Generate a 2-week training plan using Claude API."""
-    client = Anthropic(
-        api_key=os.getenv
-        ("CLAUDE_API_KEY", settings.CLAUDE_API_KEY))
+    client = Anthropic(api_key=os.getenv("CLAUDE_API_KEY", settings.CLAUDE_API_KEY))
 
     try:
         plan = TrainingPlan.objects.get(id=plan_id)
@@ -126,11 +119,7 @@ def generate_training_plan_task(plan_id):
     # Prepare user profile data
     profile_data = {
         "fitness_level": getattr(profile, "fitness_level", "unknown"),
-        "exercise_days_per_week": getattr(
-            profile,
-            "exercise_days_per_week",
-            3
-            ),
+        "exercise_days_per_week": getattr(profile, "exercise_days_per_week", 3),
         "Fitness_Level": profile.get_fitness_level_display(),
         "Exercise_Duration_Minutes": profile.get_exercise_duration_display(),
         "exercise_duration": getattr(profile, "exercise_duration", "30 min"),
@@ -205,8 +194,7 @@ Do not include any text, conversation, or markdown outside of the tool's input.
                 {
                     "name": "get_plan_json",
                     "description": (
-                        "Generates 2-week plan based "
-                        "on user profile and rules."
+                        "Generates 2-week plan based " "on user profile and rules."
                     ),
                     "input_schema": PLAN_SCHEMA,
                 }
@@ -217,12 +205,10 @@ Do not include any text, conversation, or markdown outside of the tool's input.
             tool_use = response.content[0]
             if tool_use.name == "get_plan_json":
                 ai_data = tool_use.input
-                if 'plan_weeks' not in ai_data or not ai_data['plan_weeks']:
+                if "plan_weeks" not in ai_data or not ai_data["plan_weeks"]:
                     raise ValueError("AI did not return plan_weeks data")
                 plan.plan_json = ai_data
-                plan.plan_summary = ai_data.get(
-                    "plan_summary",
-                    "Plan generated.")
+                plan.plan_summary = ai_data.get("plan_summary", "Plan generated.")
                 plan.plan_title = ai_data.get(
                     "plan_title", plan.plan_title or "New Training Plan"
                 )
