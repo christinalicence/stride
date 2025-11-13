@@ -8,8 +8,8 @@
 
 <div class="card p-4 mb-4">
     <div>
-    <h1>{{ profile.display_name|default:profile.user.username }}</h1>
-        </div>
+        <h1>{{ profile.display_name|default:profile.user.username }}</h1>
+    </div>
     <div class="d-flex align-items-center mb-3">
        <img src="{{ profile.get_profile_picture_url }}" class="card-img-top mx-auto mt-3 profile-picture" alt="{{ profile.display_name }}">
     </div>
@@ -46,7 +46,7 @@
    {% if pending_follow_requests %}
     <div class="card my-4" id="follow-requests-card">
         <div class="card-header">
-            <h5 class="mb-0">Pending Follow Requests</h5>
+            <h2 class="mb-0">Pending Follow Requests</h2>
         </div>
         <ul class="list-group list-group-flush">
             {% for req in pending_follow_requests %}
@@ -82,7 +82,7 @@
 {% endif %}
 
 <div class="card shadow-sm p-4 mb-4">
-    <h3>Training Plans</h3>
+    <h2>Training Plans</h2>
     {% if user.is_authenticated and user == profile.user %}
         <a class="normal-link" href="{% url 'previous_plans' %}">View All Plans ({{ previous_plans|length }})</a>
     {% endif %}
@@ -90,14 +90,15 @@
     <br>
         <div class="row"> 
             {% for plan in previous_plans|slice:":3" %}
-            <div class="col-12 col-md-6 col-lg-4 mb-3"> <div class="card border-primary h-100">
+            <div class="col-12 col-md-6 col-lg-4 mb-3"> 
+                <div class="card border-primary h-100">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">
+                        <h3 class="card-title">
                             {% if plan.target_event %}{{ plan.target_event }}{% else %}{{ plan.plan_title|default:"Training Plan" }}{% endif %}
-                        </h5>
-                        <h6 class="card-subtitle mb-3 text-muted">
+                        </h3>
+                        <h4 class="card-subtitle mb-3 text-muted">
                             Start Date: {{ plan.start_date|date:"M d, Y" }}
-                        </h6>
+                        </h4>
                         <p class="card-text">
                             {{ plan.plan_summary|default:"Summary being generated or not available."|truncatechars:100 }}
                         </p>
@@ -113,7 +114,7 @@
 </div>
 
 <div class="card shadow-sm p-4 mb-4">
-    <h3>Chat to Each Other</h3>
+    <h2>Chat to Each Other</h2>
     
     {% if can_comment %}
     <div style="margin-bottom: 20px;">
@@ -134,7 +135,7 @@
                 {% if comment.approved or profile.user == user %}
                     <li class="list-group-item">
                         <div>
-                            <h4>{{ comment.author.display_name }}</h4>: {{ comment.content }}
+                            <h3>{{ comment.author.display_name }}</h3>: {{ comment.content }}
                             <p class="text-muted small">{{ comment.created_at|date:"M d, Y H:i" }}</p>
                         </div>
 

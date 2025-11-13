@@ -43,7 +43,7 @@ All the HTML pages were passed the [W3C HTML Validation Tester](https://validato
 
 After some research I found it better to enter the urls in to the validator rather than the code as it wasn't recognising some of the Django tags.
 
-All pages passed when entered this way.
+All pages passed when entered this way. There were some 'trailing slash' reports after I used a code formatter, but I chose to ignore these.
 
 ![Error free html test](docs-images/html-validator.png)
 
@@ -55,7 +55,7 @@ The site passed the [W3C CSS Validation Test](https://jigsaw.w3.org/css-validato
 
 #### Python Standards
 
-I made sure that all my code was to [PEP8](https://peps.python.org/pep-0008/) standards by downloading Flake8 and Black. I had several 'long line' errors to fix, but worked through them! I restricted my line limit to 88 characters, with shorter docstring limits of 72. The limit is set in my settings.json to work with Black. After taking a look at the PEP8 guidelines I felt this was appropriate given their section on line length and some people prefering longer lines. I checked the docstrings manually.
+I made sure that all my code was to [PEP8](https://peps.python.org/pep-0008/) standards by downloading Flake8 and Black. I had several 'long line' errors to fix, but worked through them! I restricted my line limit to 88 characters, with shorter docstring limits of 72. The limit is set in my settings.json to work with Black. After taking a look at the PEP8 guidelines I felt this was appropriate given their section on line length and some people preferring longer lines. I checked the docstrings manually.
 
 I initially set Black to save on format, but found this caused issues with my HTML pages, which it also formatted. My solution to this was to create a settings.json file and disable the setting to reformat on save. In order to reformat any file in the project you now run Black file-path/yourfile in the terminal.
 
@@ -66,7 +66,7 @@ The pages were tested using Google Lighthouse for performance, accessibility and
 Here is the report for the home page
 ![Google Lighthouse Report](docs-images/lighthouse-home.png)
 
-Lighthouse did uncover an issue on my traning plans where the button colours used didn't have sufficient contrast.
+Lighthouse did uncover an issue on my training plans where the button colours used didn't have sufficient contrast.
 
 ![buttons in old colour](docs-images/button-contrast.png)
 
@@ -124,6 +124,30 @@ There are also automated tests for the search functions, including if the search
 
 The site has been tested using Lighthouse, Android phones, iphones and an ipad. No issues were found for responsiveness, I kept this simple by using Bootstrap responsive setups.
 
+I am not going to link all the images here, but for the home page it adapts as below
+
+Desktop
+![Homepage shown on Desktop](docs-images/home-desktop.png)
+
+ipad
+![Homepage shown on ipad](docs-images/home-ipad.png)
+
+iphone
+![Homepage shown on iphone](docs-images/home-iphone.png)
+
+The plans are as below
+
+Desktop
+![Plan page shown on desktop](docs-images/plan-desktop.png)
+
+ipad
+![Plan page shown on ipad](docs-images/plan-ipad.png)
+
+iphone
+![Plan page shown on iphone](docs-images/plan-iphone.png)
+
+Because the site is built using Bootstrap it adapts in a similar way across the different pages.
+
 ### e. User Testing/Feedback
 
 #### First Feedback
@@ -143,11 +167,11 @@ I received quite a lot of user feedback when it was tested about 60% through dev
 
 These were all fixed.
 
-I decided to elminate some fields to make the input simpler - weight, height, age and gender. The site was too complicated, making the user flow difficult.
+I decided to eliminate some fields to make the input simpler - weight, height, age and gender. The site was too complicated, making the user flow difficult.
 
 #### Second Feedback
 
-I did another bit of user testing when I around 95% through development. Again there were some suggestions for improvement.
+I did another bit of user testing when I was around 95% through development. Again there were some suggestions for improvement.
 
 - The entry for the 'exercise duration' was free text, which meant that illogical amounts could be entered. I fixed this by turning it in to a dropdown.
 
@@ -165,7 +189,7 @@ All automated tests are passing when run.
 
 ![the terminal showing passing tests](docs-images/automated-tests.png)
 
-The test cover almost all the code, apart from the AI output, which I haven't found a robust test for. This needs to be done manually.
+The tests cover almost all the code, apart from the AI output, which I haven't found a robust test for. This needs to be done manually.
 
 ## 4. Test Driven Development
 

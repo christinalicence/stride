@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     "cloudinary_storage",
     "cloudinary",
     "django_celery_results",
-    "fitness",
+    "fitness.apps.FitnessConfig",  # means signals are imported
     "crispy_forms",
     "crispy_bootstrap5",
 ]
