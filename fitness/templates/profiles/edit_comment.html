@@ -9,8 +9,8 @@
   <form method="post">
     {% csrf_token %}
     {{ form|crispy }}
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-    <a href="{% url 'profile_detail' comment.author.user.username %}" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn normal-button">Save Changes</button>
+    <a href="{% url 'profile_detail' comment.author.user.username %}" class="btn outline-button">Cancel</a>
   </form>
     </div>
 </div>

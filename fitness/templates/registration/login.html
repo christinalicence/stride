@@ -15,7 +15,7 @@
         {{ form|crispy }}
         <!--to redirect to account after login-->
         <input type="hidden" name="next" value="/accounts/profile/" />
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" class="btn normal-button">Login</button>
         </form>
         <p class="mt-3">Don't have an account? <a href="{% url 'signup' %}">Sign up here</a>.</p>
     </div>

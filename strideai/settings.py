@@ -225,28 +225,5 @@ CELERY_RESULT_BACKEND = "django-db"
 # Inform Celery to use the cache backend for the result storage connection
 CELERY_CACHE_BACKEND = "default"
 
-# API KEYS
+# API KEY for Claude AI
 CLAUDE_API_KEY = config("CLAUDE_API_KEY", default="")
-
-
-# logging setup for heroku debugging
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-        },
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "INFO",
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["console"],
-            "level": "INFO",
-            "propagate": False,
-        },
-    },
-}
