@@ -19,6 +19,7 @@ class TestUserProfileForm(TestCase):
                 "minor_injuries": "Twisted ankle",
                 "exercise_days_per_week": 3,
                 "exercise_duration": "31-60",
+                "fitness_level": "intermediate",  
             }
         )
         if not form.is_valid():
@@ -31,6 +32,7 @@ class TestUserProfileForm(TestCase):
             data={
                 "exercise_days_per_week": "",
                 "exercise_duration": "",
+                "fitness_level": "", 
             }
         )
         assert not form.is_valid()
@@ -41,10 +43,10 @@ class TestUserProfileForm(TestCase):
             data={
                 "exercise_days_per_week": 3,
                 "exercise_duration": "31-60",
+                "fitness_level": "beginner",
             }
         )
         assert form.is_valid()
-
 
 class TestTrainingPlanForm(TestCase):
     """Tests training plan for works with valid data added"""

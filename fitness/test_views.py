@@ -94,10 +94,11 @@ class FitnessViewsTest(TestCase):
             "profile_picture": "",
             "equipment_text": "",
             "goal_event": "5K Run",
-            "goal_date": date.today() + timedelta(days=30),
+            "goal_date": (date.today() + timedelta(days=30)).strftime("%Y-%m-%d"),
             "injuries_and_limitations": "None",
             "exercise_days_per_week": 5,
-            "exercise_duration": "1 hour",
+            "exercise_duration": "31-60",
+            "fitness_level": "intermediate",
         }
         response = self.client.post(url, new_data, follow=True)
         # Check for success
