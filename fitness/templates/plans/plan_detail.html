@@ -12,7 +12,7 @@
       </h2>
 
       <div class="d-flex justify-content-center mb-4 gap-3">
-        {% if request.user == plan.user %}
+        {% if request.user.id == plan.user.id and plan.plan_json and plan.plan_json.plan_weeks %}
         <form
           method="post"
           action="{% url 'delete_plan_and_retry' pk=plan.pk %}"
@@ -28,7 +28,6 @@
         {% endif %}
       </div>
       <div class="mb-3">
-        <h3 class="medium-heading">Goal Type: {{ plan.goal_type|default:"Combined" }}</h3>
         <p>Start Date: {{ plan.start_date|date:"F j, Y" }}</p>
 
         {% if plan.target_date %}

@@ -175,7 +175,7 @@ Do not include any text, conversation, or markdown outside of the tool's input.
     try:
         response = client.messages.create(
             model="claude-haiku-4-5-20251001",
-            max_tokens=4096,
+            max_tokens=8192,
             system=(
                 "You are an expert fitness trainer. "
                 "You MUST return a complete training plan "
